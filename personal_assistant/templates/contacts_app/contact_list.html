@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Список контактів{% endblock %}
+
+{% block content %}
+    <h1>Список контактів</h1>
+    <ul>
+        {% for contact in contacts %}
+            <li>
+                <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a>
+            </li>
+        {% empty %}
+            <li>Контакти не знайдено.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'add_contact' %}">Додати контакт</a><br>
+    <a href="{% url 'contact_home' %}">Повернутися на головну сторінку контактів</a>
+{% endblock %}

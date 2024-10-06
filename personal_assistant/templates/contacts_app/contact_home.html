@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакти - Головна{% endblock %}
+
+{% block content %}
+    <h1>Керування контактами</h1>
+    <ul>
+        <li><a href="{% url 'add_contact' %}">Додати контакт</a></li>
+        <li><a href="{% url 'contact_list' %}">Список контактів</a></li>
+        <li><a href="{% url 'upcoming_birthdays' %}">Контакти з наближаючимися днями народженнями</a></li>
+        <li><a href="{% url 'contact_search' %}">Пошук контактів</a></li>
+    </ul>
+
+{% endblock %}

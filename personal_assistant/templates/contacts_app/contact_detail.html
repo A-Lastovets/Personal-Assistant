@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Деталі контакту{% endblock %}
+
+{% block content %}
+    <h1>{{ contact.name }}</h1>
+    <p>Адреса: {{ contact.address }}</p>
+    <p>Номер телефону: {{ contact.phone_number }}</p>
+    <p>Email: {{ contact.email }}</p>
+    <p>День народження: {{ contact.birthday }}</p>
+
+    <a href="{% url 'edit_contact' contact.id %}">Редагувати</a><br>
+    <a href="{% url 'delete_contact' contact.id %}">Видалити</a><br>
+    
+    <a href="{% url 'contact_home' %}">Повернутися на головну сторінку контактів</a>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакти з наближаючимися днями народженнями{% endblock %}
+
+{% block content %}
+    <h1>Контакти з наближаючимися днями народженнями</h1>
+    <ul>
+        {% for contact in upcoming_birthdays %}
+            <li>
+                <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a> - День народження: {{ contact.birthday }}
+            </li>
+        {% empty %}
+            <li>Немає контактів з наближаючимися днями народження.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'contact_home' %}">Повернутися на головну сторінку контактів</a>
+{% endblock %}

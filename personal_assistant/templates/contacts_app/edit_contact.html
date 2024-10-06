@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Редагувати контакт{% endblock %}
+
+{% block content %}
+    <h1>Редагувати контакт</h1>
+    <form method="POST" action="{% url 'edit_contact' contact.id %}">
+        {% csrf_token %}
+        <label for="name">Ім'я:</label>
+        <input type="text" name="name" value="{{ contact.name }}" required><br>
+
+        <label for="address">Адреса:</label>
+        <input type="text" name="address" value="{{ contact.address }}" required><br>
+
+        <label for="phone_number">Номер телефону:</label>
+        <input type="text" name="phone_number" value="{{ contact.phone_number }}" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" value="{{ contact.email }}" required><br>
+
+        <label for="birthday">День народження:</label>
+        <input type="date" name="birthday" value="{{ contact.birthday }}" required><br>
+
+        <button type="submit">Зберегти зміни</button>
+    </form>
+{% endblock %}
