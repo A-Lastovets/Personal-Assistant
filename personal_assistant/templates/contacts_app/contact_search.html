@@ -7,9 +7,10 @@
 
     <form method="GET" action="{% url 'contact_search' %}">
         <input type="text" name="query" placeholder="Пошук контактів..." value="{% if query %}{{ query }}{% endif %}">
-        <button type="submit">Пошук</button>
+        <button type="submit">Пошук</button><br>
     </form>
-
+    <a href="{% url 'contact_home' %}">Повернутися на сторінку керування контактами</a>
+    
     {% if query %}
         {% if contacts %}
             <ul>

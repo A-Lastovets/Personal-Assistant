@@ -12,5 +12,6 @@
     <a href="{% url 'edit_contact' contact.id %}">Редагувати</a><br>
     <a href="{% url 'delete_contact' contact.id %}">Видалити</a><br>
     
-    <a href="{% url 'contact_home' %}">Повернутися на головну сторінку контактів</a>
+    <a href="{% url 'contact_list' %}">Повернутися до списку контактів</a><br>
+    <a href="{% url 'contact_home' %}">Повернутися на сторінку керування контактами</a>
 {% endblock %}
