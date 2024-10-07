@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Exchange Rate</h1>
+
+    <p>USD to UAH: {{ usd_to_uah }}</p>
+    <p>EUR to UAH: {{ eur_to_uah }}</p>
+    <p>PLN to UAH: {{ pln_to_uah }}</p>
+
+    <h1>Latest News</h1>
+{% for category, articles in news_by_category.items %}
+    <h2>{{ category|title }} News</h2>
+    {% if articles %}
+        <ul>
+            {% for article in articles %}
+                {% if article.description != 'Removed' %}
+                    <li>
+                        <h3><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h3>
+                        <p>{{ article.description }}</p>
+                        <span>{{ article.published_at }}</span>
+                        <p><strong>Author:</strong> {{ article.author }}</p>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No news found for this category.</p>
+    {% endif %}
+{% endfor %}
+</body>
+</html>
+
