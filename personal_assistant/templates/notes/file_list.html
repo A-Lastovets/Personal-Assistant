@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список файлів</title>
+</head>
+<body>
+    <h1>Список файлів</h1>
+    <ul>
+        {% for file in files %}
+            <li>
+                <a href="{{ file.file.url }}">{{ file.file.name }}</a> ({{ file.category }}) 
+                <a href="{% url 'delete_file' file.id %}">Видалити</a>
+            </li>
+        {% empty %}
+            <li>Немає файлів.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'upload_file' %}">Завантажити файл</a>
+</body>
+</html>

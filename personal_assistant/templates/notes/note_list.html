@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список нотаток</title>
+</head>
+<body>
+    <h1>Список нотаток</h1>
+    <form method="get">
+        <input type="text" name="q" placeholder="Пошук...">
+        <button type="submit">Пошук</button>
+    </form>
+    <ul>
+        {% for note in notes %}
+            <li>
+                {{ note.title }} 
+                <a href="{% url 'edit_note' note.id %}">Редагувати</a> 
+                <a href="{% url 'delete_note' note.id %}">Видалити</a>
+            </li>
+        {% empty %}
+            <li>Немає нотаток.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_note' %}">Додати нотатку</a>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Деталі нотатки</title>
+</head>
+<body>
+    <h1>{{ note.title }}</h1>
+    <p><strong>Текст:</strong> {{ note.content }}</p>
+    <p><strong>Створено:</strong> {{ note.created_at }}</p>
+    <p><strong>Оновлено:</strong> {{ note.updated_at }}</p>
+    
+    <h2>Теги:</h2>
+    <ul>
+        {% for tag in note.tags.all %}
+            <li>{{ tag.name }}</li>
+        {% empty %}
+            <li>Немає тегів.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'edit_note' note.id %}">Редагувати</a>
+    <form method="post" action="{% url 'delete_note' note.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit">Видалити</button>
+    </form>
+    
+    <br>
+    <a href="{% url 'note_list' %}">Назад до списку нотаток</a>
+</body>
+</html>

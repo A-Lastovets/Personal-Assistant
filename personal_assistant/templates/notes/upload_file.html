@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Завантажити файл</title>
+</head>
+<body>
+    <h1>Завантажити файл</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Завантажити</button>
+    </form>
+    <a href="{% url 'file_list' %}">Назад до списку файлів</a>
+</body>
+</html>
