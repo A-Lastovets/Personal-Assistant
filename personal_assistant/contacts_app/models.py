@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import RegexValidator, EmailValidator
+from django.core.validators import EmailValidator
+from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 
 class Contact(models.Model):
@@ -9,27 +10,17 @@ class Contact(models.Model):
     Attributes:
         name (str): Ім'я контакту.
         address (str): Адреса контакту.
-        phone_number (str): Номер телефону контакту. Перевіряється за допомогою регулярного виразу.
+        phone_number (PhoneNumberField): Номер телефону контакту.
         email (str): Електронна пошта контакту. Перевіряється валідатором EmailValidator.
         birthday (date): День народження контакту.
     """
-
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
-    phone_number = models.CharField(
-        max_length=15,
-        validators=[
-            RegexValidator(
-                regex=r'^\+?1?\d{9,15}$',
-                message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
-            )
-        ]
-    )
-    email = models.EmailField(validators=[EmailValidator(message="Enter a valid email address.")])
+    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
+    email = models.EmailField()
     birthday = models.DateField()
 
     def __str__(self):
-        """Повертає рядкове представлення контакту (ім'я)."""
         return self.name
 
     def days_until_birthday(self):

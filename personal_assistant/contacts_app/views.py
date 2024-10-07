@@ -34,9 +34,13 @@ def add_contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('contact_list')
+            return redirect('contact_list')  # Перенаправлення на список контактів
+        else:
+            # Повертаємо форму з помилками
+            return render(request, 'contacts_app/add_contact.html', {'form': form})
     else:
         form = ContactForm()
+
     return render(request, 'contacts_app/add_contact.html', {'form': form})
 
 def contact_detail(request, contact_id):
@@ -52,7 +56,6 @@ def contact_detail(request, contact_id):
     """
     contact = get_object_or_404(Contact, id=contact_id)
     return render(request, 'contacts_app/contact_detail.html', {'contact': contact})
-
 
 def edit_contact(request, contact_id):
     """
