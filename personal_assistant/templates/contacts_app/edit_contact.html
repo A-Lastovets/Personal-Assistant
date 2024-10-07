@@ -4,23 +4,46 @@
 
 {% block content %}
     <h1>Редагувати контакт</h1>
-    <form method="POST" action="{% url 'edit_contact' contact.id %}">
+    <form method="POST">
         {% csrf_token %}
+
         <label for="name">Ім'я:</label>
-        <input type="text" name="name" value="{{ contact.name }}" required><br>
+        <input type="text" name="name" value="{{ form.name.value|default:'' }}" required>
+        {% if form.name.errors %}
+            <div style="color: red;">{{ form.name.errors|join:', ' }}</div>
+        {% endif %}
+        <br>
 
         <label for="address">Адреса:</label>
-        <input type="text" name="address" value="{{ contact.address }}" required><br>
+        <input type="text" name="address" value="{{ form.address.value|default:'' }}" required>
+        {% if form.address.errors %}
+            <div style="color: red;">{{ form.address.errors|join:', ' }}</div>
+        {% endif %}
+        <br>
 
         <label for="phone_number">Номер телефону:</label>
-        <input type="text" name="phone_number" value="{{ contact.phone_number }}" required><br>
+        <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" required>
+        {% if form.phone_number.errors %}
+            <div style="color: red;">{{ form.phone_number.errors|join:', ' }}</div>
+        {% endif %}
+        <br>
 
         <label for="email">Email:</label>
-        <input type="email" name="email" value="{{ contact.email }}" required><br>
+        <input type="email" name="email" value="{{ form.email.value|default:'' }}" required>
+        {% if form.email.errors %}
+            <div style="color: red;">{{ form.email.errors|join:', ' }}</div>
+        {% endif %}
+        <br>
 
         <label for="birthday">День народження:</label>
-        <input type="date" name="birthday" value="{{ contact.birthday }}" required><br>
+        <input type="date" name="birthday" value="{{ form.birthday.value|default_if_none:form.birthday.value|date:'Y-m-d' }}" required>
+        {% if form.birthday.errors %}
+            <div style="color: red;">{{ form.birthday.errors|join:', ' }}</div>
+        {% endif %}
+        <br>
 
         <button type="submit">Зберегти зміни</button>
     </form>
+
+    <a href="{% url 'contact_list' %}">Повернутися на список контактів</a>
 {% endblock %}

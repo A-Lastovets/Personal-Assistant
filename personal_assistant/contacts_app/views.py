@@ -71,14 +71,22 @@ def edit_contact(request, contact_id):
         HttpResponse: Сторінка з формою для редагування контакту.
     """
     contact = get_object_or_404(Contact, id=contact_id)
+    
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
             form.save()
-            return redirect('contact_list')
+            return redirect('contact_list')  # Перенаправлення на список контактів
+        else:
+            # Виведення помилок валідації, якщо форма не є валідною
+            print(form.errors)  # Додатковий лог для відстеження проблем
     else:
         form = ContactForm(instance=contact)
-    return render(request, 'contacts_app/edit_contact.html', {'form': form, 'contact': contact})
+
+    return render(request, 'contacts_app/edit_contact.html', {
+        'form': form,
+        'contact': contact  # Передаємо також об'єкт контакту для інших потреб
+    })
 
 def delete_contact(request, contact_id):
     """

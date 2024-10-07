@@ -37,13 +37,18 @@ class ContactForm(forms.ModelForm):
         та унікальна в базі даних.
         """
         email = self.cleaned_data.get('email')
+        
+        # Перевірка на валідність електронної пошти
         try:
             EmailValidator()(email)
         except ValidationError:
             raise ValidationError("Enter a valid email address.")
 
-        # Перевірка унікальності електронної адреси
-        if Contact.objects.filter(email=email).exists():
+        # Отримуємо контакт, якщо форма редагування
+        contact_id = self.instance.id  # Використання id поточного контакту
+
+        # Перевірка унікальності електронної адреси, виключаючи поточний контакт
+        if Contact.objects.filter(email=email).exclude(id=contact_id).exists():
             raise ValidationError("This email address is already in use.")
 
         return email
