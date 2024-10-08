@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.db.models import Q
 from datetime import timedelta, datetime
 from .forms import BirthdayFilterForm
+from dateutil.relativedelta import relativedelta
 
 def contacts_home(request):
     """
@@ -162,8 +163,8 @@ def upcoming_birthdays(request):
     Returns:
         HttpResponse: Сторінка з контактами, що мають наближаючі дні народження.
     """
-    today = datetime.now().date()  # Отримуємо поточну дату
-    period = request.GET.get('Період', 1)  # За замовчуванням 1 місяць
+    today = timezone.localdate()  # Отримуємо поточну дату
+    period = request.GET.get('period', 1)  # За замовчуванням 1 місяць
 
     try:
         period = int(period)
@@ -171,16 +172,41 @@ def upcoming_birthdays(request):
         period = 1  # Якщо період некоректний, то за замовчуванням 1 місяць
 
     # Обчислюємо кінцеву дату на основі обраного періоду
-    end_date = today + timedelta(days=period * 30)  # Просте перетворення на дні
+    end_date = today + relativedelta(months=period)
 
-    upcoming_birthdays = Contact.objects.filter(
-        birthday__gte=today,
-        birthday__lte=end_date
-    )
+    print(f'Today: {today}, End date: {end_date}')  # Для перевірки
 
-    form = BirthdayFilterForm(initial={'Період': period})  # Додаємо вибране значення в форму
+    # Витягуємо всі контакти
+    all_birthdays = Contact.objects.all()
+
+    results = []
+    for contact in all_birthdays:
+        # Отримуємо день народження в поточному році
+        contact_birthday_current_year = contact.birthday.replace(year=today.year)
+
+        # Якщо день народження вже пройшов у цьому році, перевіряємо наступний рік
+        if contact_birthday_current_year < today:
+            contact_birthday_next_year = contact.birthday.replace(year=today.year + 1)
+        else:
+            contact_birthday_next_year = contact_birthday_current_year
+
+        # Перевіряємо, чи попадає день народження в обраний період (поточний або наступний рік)
+        if today <= contact_birthday_current_year <= end_date or today <= contact_birthday_next_year <= end_date:
+            # Додаємо до результатів найближчу дату народження для сортування
+            nearest_birthday = contact_birthday_current_year if contact_birthday_current_year >= today else contact_birthday_next_year
+            results.append((contact, nearest_birthday))
+
+    # Сортуємо контакти за найближчою датою дня народження
+    results.sort(key=lambda x: x[1])
+
+    # Витягуємо відсортованих контактів
+    sorted_contacts = [contact for contact, birthday in results]
+
+    print(f'Upcoming birthdays: {len(sorted_contacts)} found')  # Для перевірки
+
+    form = BirthdayFilterForm(initial={'period': period})  # Додаємо вибране значення в форму
 
     return render(request, 'contacts_app/upcoming_birthdays.html', {
-        'upcoming_birthdays': upcoming_birthdays,
+        'upcoming_birthdays': sorted_contacts,  # Передаємо відсортовані контакти
         'form': form,
     })

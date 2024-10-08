@@ -64,4 +64,4 @@ class BirthdayFilterForm(forms.Form):
         (12, '1 рік'),
     ]
     
-    period = forms.ChoiceField(choices=PERIOD_CHOICES, initial=1)
+    period = forms.ChoiceField(choices=PERIOD_CHOICES, initial=1, label="Виберіть період")
