@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Нотатки - Головна{% endblock %}
+
+{% block content %}
+    <h1>Керування нотатками</h1>
+    <ul>
+        <li><a href="{% url 'add_note' %}">Додати нотатку</a></li><br>
+        <li><a href="{% url 'note_list' %}">Список нотаток</a></li><br>
+    </ul>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Додати нотатку{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Додати нотатку</h1>
+
+        <!-- Перевірка, чи є повідомлення -->
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Форма для додавання нотатки -->
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+
+            <!-- Відображення полів форми -->
+            {{ form.title.label }} {{ form.title }}<br>
+            {{ form.content.label }} {{ form.content }}<br>
+
+            <!-- Додайте поле для вибору item -->
+            {{ form.item.label }} {{ form.item }}<br>  <!-- Поле для вибору елемента -->
+            
+            <label for="id_tags">Теги:</label><br>
+            {{ form.tags }}<br>
+
+            <!-- Кнопка додавання -->
+            <button type="submit" class="btn btn-primary mt-3">Додати нотатку</button>
+        </form>
+
+        <!-- Посилання для повернення до списку нотаток -->
+        <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3">Назад до списку нотаток</a>
+    </div>
+{% endblock %}

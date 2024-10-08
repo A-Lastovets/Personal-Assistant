@@ -20,10 +20,7 @@ from .views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home', home, name='home'),
+    path('home/', home, name='home'),
     path('contacts/', include('contacts_app.urls')),    # маршрути до додатку контактів
-    # path('users/', include('users_app.urls')),        # маршрути до додатку користувачів
-    # path('files/', include('files_app.urls')),        # маршрути до додатку файлів
-    # path('notes/', include('notes_app.urls')),        # маршрути до додатку нотаток
-    # path('news/', include('news_app.urls')),          # маршрути до додатку новин
+    path('notes/', include('notes_app.urls')),          # маршрути до додатку нотаток
 ]

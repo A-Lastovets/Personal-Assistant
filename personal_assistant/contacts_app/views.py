@@ -3,9 +3,10 @@ from .models import Contact
 from .forms import ContactForm
 from django.utils import timezone
 from django.db.models import Q
-from datetime import timedelta, datetime
+from django.contrib.auth.decorators import login_required
 from .forms import BirthdayFilterForm
 from dateutil.relativedelta import relativedelta
+
 
 def contacts_home(request):
     """
@@ -18,6 +19,7 @@ def contacts_home(request):
         HttpResponse: Сторінка для вибору дій з контактами.
     """
     return render(request, 'contacts_app/contact_home.html')
+
 
 def add_contact(request):
     """
@@ -45,6 +47,7 @@ def add_contact(request):
 
     return render(request, 'contacts_app/add_contact.html', {'form': form})
 
+
 def contact_detail(request, contact_id):
     """
     Показує деталі конкретного контакту.
@@ -58,6 +61,7 @@ def contact_detail(request, contact_id):
     """
     contact = get_object_or_404(Contact, id=contact_id)
     return render(request, 'contacts_app/contact_detail.html', {'contact': contact})
+
 
 def edit_contact(request, contact_id):
     """
@@ -90,6 +94,7 @@ def edit_contact(request, contact_id):
         'contact': contact  # Передаємо контакт для шаблону
     })
 
+
 def delete_contact(request, contact_id):
     """
     Видалення контакту.
@@ -108,6 +113,7 @@ def delete_contact(request, contact_id):
         contact.delete()
         return redirect('contact_list')
     return render(request, 'contacts_app/delete_contact.html', {'contact': contact})
+
 
 def contact_list(request):
     """
@@ -132,6 +138,7 @@ def contact_list(request):
         )
     return render(request, 'contacts_app/contact_list.html', {'contacts': contacts})
 
+
 def contact_search(request):
     """
     Пошук контактів за переданим запитом.
@@ -152,6 +159,7 @@ def contact_search(request):
         contacts = None
 
     return render(request, 'contacts_app/contact_search.html', {'contacts': contacts, 'query': query})
+
 
 def upcoming_birthdays(request):
     """

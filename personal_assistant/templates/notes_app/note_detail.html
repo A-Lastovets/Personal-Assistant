@@ -1,0 +1,26 @@
+<!-- notes_app/note_detail.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Деталі нотатки{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>{{ note.title }}</h1>
+        <p>{{ note.content }}</p>
+        
+        <h5>Дата створення:</h5> <!-- Додаємо заголовок для дати -->
+        <p>{{ note.created_at|date:"d.m.Y H:i" }}</p> <!-- Відображаємо дату створення -->
+
+        <h5>Теги:</h5>
+        <ul>
+            {% for tag in note.tags.all %}
+                <li>{{ tag.name }}</li>
+            {% endfor %}
+        </ul>
+        
+        <a href="{% url 'edit_note' note.id %}" class="btn btn-primary">Редагувати</a>
+        <a href="{% url 'delete_note' note.id %}" class="btn btn-danger">Видалити</a>
+        <a href="{% url 'note_list' %}" class="btn btn-secondary">Назад до списку</a>
+    </div>
+{% endblock %}
