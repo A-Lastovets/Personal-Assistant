@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import ExchangeRateAndNewsView
+from .views import ExchangeRateNewsView
 
 urlpatterns = [
-    path('home/', ExchangeRateAndNewsView.as_view(), name='news_summary')
+    path('home/', ExchangeRateNewsView.as_view(), name='exchange_rate_news'),
 ]
