@@ -1,37 +1,19 @@
-<!-- Форма для вибору файлу з локального комп'ютера та завантаження його на сервер. Може містити поля для вибору категорії (зображення, документи, відео тощо). -->
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-</form>
+{% extends 'base.html' %}
 
-<!-- <!DOCTYPE html>
-<html>
-<head>
-    <title>Media Upload Page</title>
-</head>
-<body>
-    <button id="upload_widget" class="cloudinary-button">Upload files</button>
-
-    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>  
-
-    <script type="text/javascript">  
-        var myWidget = cloudinary.createUploadWidget({
-            cloudName: 'my_cloud_name', 
-            uploadPreset: 'my_preset'
-        }, (error, result) => { 
-            if (!error && result && result.event === "success") { 
-                	   // Access the delivery URL of the uploaded image 
-   var imageUrl = result.info.secure_url; 
-   // Save imageUrl to your database 
-   // You can use an AJAX request to send this data to your server
-   console.log('Done! Here is the image info: ', result.info); 
-            }
-        })
-
-        document.getElementById("upload_widget").addEventListener("click", function(){
-            myWidget.open();
-        }, false);
-    </script>
-</body>
-</html> -->
+{% block content %}
+<div class="container mt-5">
+    <h1>Upload File</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.name.id_for_label }}" class="form-label">File Name</label>
+            {{ form.name }}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.file.id_for_label }}" class="form-label">File</label>
+            {{ form.file }}
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+</div>
+{% endblock %}

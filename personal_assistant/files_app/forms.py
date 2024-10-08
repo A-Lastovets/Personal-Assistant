@@ -5,22 +5,21 @@ from .models import File
 class FileUploadForm(forms.ModelForm):
     class Meta:
         model = File
-        fields = ['name', 'file', 'category']
-
-
-class FileForm(forms.ModelForm):
-    class Meta:
-        model = File
-        fields = ['file', 'category']
+        fields = ['name', 'file']
 
     def save(self, commit=True):
-        file = super().save(commit=False)
-        if file.file.name.endswith(('.png', '.jpg', '.jpeg')):
-            file.file_type = 'image'
-        elif file.file.name.endswith(('.mp4', '.avi')):
-            file.file_type = 'video'
+        file_instance = super().save(commit=False)
+
+        file_name = file_instance.file.name.lower()
+        if file_name.endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff')):
+            file_instance.category = 'image'
+        elif file_name.endswith(('.mp4', '.avi', '.mov', '.wmv', '.mkv', '.flv')):
+            file_instance.category = 'video'
+        elif file_name.endswith(('.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv')):
+            file_instance.category = 'document'
         else:
-            file.file_type = 'document'
+            file_instance.category = 'other'
+
         if commit:
-            file.save()
-        return file
+            file_instance.save()
+        return file_instance

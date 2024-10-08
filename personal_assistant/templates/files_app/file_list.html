@@ -1,21 +1,165 @@
-<!-- Відображає всі файли користувача, включаючи категорії. Користувач може переглядати, завантажувати, і видаляти файли -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Uploaded files list{% endblock %}
+
+{% block content %}
 <h1>Files</h1>
 
-<form method="get">
+<!-- Кнопка для загрузки нового файла -->
+<div class="mb-4">
+    <a href="{% url 'upload_file' %}" class="btn btn-success">Upload New File</a>
+</div>
+
+<form method="get" id="filter-form">
     <label for="category">Filter by category:</label>
-    <select name="category" id="category">
-        <option value="">All</option>
-        <option value="image">Image</option>
-        <option value="document">Document</option>
-        <option value="video">Video</option>
+    <select name="category" id="category" onchange="document.getElementById('filter-form').submit()">
+        <option value="all" {% if request.GET.category == 'all' %}selected{% endif %}>All</option>
+        <option value="image" {% if request.GET.category == 'image' %}selected{% endif %}>Image</option>
+        <option value="document" {% if request.GET.category == 'document' %}selected{% endif %}>Document</option>
+        <option value="video" {% if request.GET.category == 'video' %}selected{% endif %}>Video</option>
+        <option value="other" {% if request.GET.category == 'other' %}selected{% endif %}>Other</option>
     </select>
-    <button type="submit">Filter</button>
 </form>
 
-<ul>
+<ul class="file-list">
     {% for file in files %}
-        <li>{{ file.name }} - {{ file.get_category_display }}</li>
+        <li class="file-item">
+            {% if file.category == 'image' %}
+                <img src="{{ file.file.url }}" alt="{{ file.name }}" class="file-preview" onclick="openImage('{{ file.file.url }}')" onerror="this.onerror=null; this.src='{% static 'files_app/image_placeholder.png' %}';">
+            {% elif file.category == 'video' %}
+                {% if file.preview %}
+                    <img src="{{ file.preview }}" alt="Preview for {{ file.name }}" class="file-preview" onclick="playVideo('{{ file.file.url }}')" onerror="this.onerror=null; this.src='{% static 'files_app/video_placeholder.png' %}';">
+                {% else %}
+                    <img src="{% static 'files_app/video_placeholder.png' %}" alt="Video placeholder" class="file-preview" onclick="playVideo('{{ file.file.url }}')" onerror="this.onerror=null; this.src='{% static 'files_app/video_placeholder.png' %}';">
+                {% endif %}
+                <video class="video-preview" controls style="display: none;">
+                    <source src="{{ file.file.url }}" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+            {% elif file.category == 'document' %}
+                <img src="{% static 'files_app/doc_placeholder.png' %}" alt="Document" class="file-preview" onerror="this.onerror=null; this.src='{% static 'files_app/doc_placeholder.png' %}';">
+            {% elif file.category == 'other' %}
+                <img src="{% static 'files_app/doc_placeholder.png' %}" alt="Placeholder" class="file-preview" onerror="this.onerror=null; this.src='{% static 'files_app/doc_placeholder.png' %}';">
+            {% endif %}
+            <div class="file-info">
+                <strong> {{ file.name }} </strong> - {{ file.get_category_display }}
+                <br>
+                {{ file.uploaded_at|date:"Y-m-d H:i:s" }}
+            </div>
+        </li>
     {% empty %}
         <li>No files found.</li>
     {% endfor %}
 </ul>
+
+<!-- Модальное окно для просмотра видео -->
+<div class="modal" id="videoModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Просмотр видео</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeVideo()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video id="modalVideo" class="video-preview" controls>
+                    <source src="" type="video/mp4">
+                    Ваш браузер не поддерживает видео.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для просмотра изображений -->
+<div class="modal" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Просмотр изображения</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeImage()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img id="modalImage" class="img-fluid" alt="Image preview">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function playVideo(url) {
+    const modalVideo = document.getElementById('modalVideo');
+    modalVideo.src = url;
+    $('#videoModal').modal('show');
+}
+
+function closeVideo() {
+    const modalVideo = document.getElementById('modalVideo');
+    modalVideo.pause();
+    modalVideo.src = "";
+    $('#videoModal').modal('hide');
+}
+
+function openImage(url) {
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = url;
+    $('#imageModal').modal('show');
+}
+
+function closeImage() {
+    const modalImage = document.getElementById('modalImage');
+    modalImage.src = "";
+    $('#imageModal').modal('hide');
+}
+</script>
+
+<!-- Пагинация -->
+{% if is_paginated %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        {% if files.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1&category={{ request.GET.category }}" aria-label="First">««</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ files.previous_page_number }}&category={{ request.GET.category }}" aria-label="Previous">«</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">««</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">«</span>
+            </li>
+        {% endif %}
+
+        {% for page_num in files.paginator.page_range %}
+            <li class="page-item {% if files.number == page_num %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}&category={{ request.GET.category }}">{{ page_num }}</a>
+            </li>
+        {% endfor %}
+
+        {% if files.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ files.next_page_number }}&category={{ request.GET.category }}" aria-label="Next">»</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ files.paginator.num_pages }}&category={{ request.GET.category }}" aria-label="Last">»»</a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">»</span>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">»»</span>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+{% endblock %}
