@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "django-project"
+version = "0.1.0"
+description = ""
+package-mode = false
+authors = ["Yevgeniy Python <itpython2023@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+psycopg2 = "^2.9.9"
+django = "5"
+mongoengine = "^0.29.0"
+pymongo = "^4.8.0"
+sqlalchemy = "^2.0.32"
+pillow = "^10.4.0"
+django-environ = "^0.11.2"
+newsapi = {extras = ["newsapiclient"], version = "^0.1.1"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
