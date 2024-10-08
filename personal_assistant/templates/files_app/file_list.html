@@ -1,0 +1,21 @@
+<!-- Відображає всі файли користувача, включаючи категорії. Користувач може переглядати, завантажувати, і видаляти файли -->
+<h1>Files</h1>
+
+<form method="get">
+    <label for="category">Filter by category:</label>
+    <select name="category" id="category">
+        <option value="">All</option>
+        <option value="image">Image</option>
+        <option value="document">Document</option>
+        <option value="video">Video</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<ul>
+    {% for file in files %}
+        <li>{{ file.name }} - {{ file.get_category_display }}</li>
+    {% empty %}
+        <li>No files found.</li>
+    {% endfor %}
+</ul>
