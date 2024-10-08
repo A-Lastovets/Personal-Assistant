@@ -3,7 +3,8 @@ from .models import Contact
 from .forms import ContactForm
 from django.utils import timezone
 from django.db.models import Q
-from datetime import timedelta
+from datetime import timedelta, datetime
+from .forms import BirthdayFilterForm
 
 def contacts_home(request):
     """
@@ -71,21 +72,21 @@ def edit_contact(request, contact_id):
         HttpResponse: Сторінка з формою для редагування контакту.
     """
     contact = get_object_or_404(Contact, id=contact_id)
-    
+
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
             form.save()
             return redirect('contact_list')  # Перенаправлення на список контактів
         else:
-            # Виведення помилок валідації, якщо форма не є валідною
+            # Повертаємо форму з помилками
             print(form.errors)  # Додатковий лог для відстеження проблем
     else:
-        form = ContactForm(instance=contact)
+        form = ContactForm(instance=contact)  # Встановлюємо дані для форми
 
     return render(request, 'contacts_app/edit_contact.html', {
         'form': form,
-        'contact': contact  # Передаємо також об'єкт контакту для інших потреб
+        'contact': contact  # Передаємо контакт для шаблону
     })
 
 def delete_contact(request, contact_id):
@@ -151,18 +152,35 @@ def contact_search(request):
 
     return render(request, 'contacts_app/contact_search.html', {'contacts': contacts, 'query': query})
 
-def upcoming_birthdays(request, days=7):
+def upcoming_birthdays(request):
     """
-    Показує контакти, у яких день народження протягом найближчих днів.
+    Отримує контакти з наближаючими днями народження в обраному періоді.
 
     Args:
         request (HttpRequest): Об'єкт запиту.
-        days (int): Кількість днів для перевірки (за замовчуванням 7).
 
     Returns:
-        HttpResponse: Сторінка зі списком контактів, у яких скоро день народження.
+        HttpResponse: Сторінка з контактами, що мають наближаючі дні народження.
     """
-    today = timezone.now().date()
-    upcoming = today + timedelta(days=days)
-    contacts = Contact.objects.filter(birthday__range=(today, upcoming))
-    return render(request, 'contacts_app/upcoming_birthdays.html', {'contacts': contacts})
+    today = datetime.now().date()  # Отримуємо поточну дату
+    period = request.GET.get('Період', 1)  # За замовчуванням 1 місяць
+
+    try:
+        period = int(period)
+    except ValueError:
+        period = 1  # Якщо період некоректний, то за замовчуванням 1 місяць
+
+    # Обчислюємо кінцеву дату на основі обраного періоду
+    end_date = today + timedelta(days=period * 30)  # Просте перетворення на дні
+
+    upcoming_birthdays = Contact.objects.filter(
+        birthday__gte=today,
+        birthday__lte=end_date
+    )
+
+    form = BirthdayFilterForm(initial={'Період': period})  # Додаємо вибране значення в форму
+
+    return render(request, 'contacts_app/upcoming_birthdays.html', {
+        'upcoming_birthdays': upcoming_birthdays,
+        'form': form,
+    })

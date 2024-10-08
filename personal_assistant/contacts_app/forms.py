@@ -52,3 +52,16 @@ class ContactForm(forms.ModelForm):
             raise ValidationError("This email address is already in use.")
 
         return email
+    
+class BirthdayFilterForm(forms.Form):
+    """
+    Форма для вибору періоду для фільтрації контактів з наближаючими днями народження.
+    """
+    PERIOD_CHOICES = [
+        (1, '1 місяць'),
+        (3, '3 місяці'),
+        (6, '6 місяців'),
+        (12, '1 рік'),
+    ]
+    
+    period = forms.ChoiceField(choices=PERIOD_CHOICES, initial=1)

@@ -5,12 +5,6 @@
 {% block content %}
     <h1>Пошук контактів</h1>
 
-    <form method="GET" action="{% url 'contact_search' %}">
-        <input type="text" name="query" placeholder="Пошук контактів..." value="{% if query %}{{ query }}{% endif %}">
-        <button type="submit">Пошук</button><br>
-    </form>
-    <a href="{% url 'contact_home' %}">Повернутися на сторінку керування контактами</a>
-    
     {% if query %}
         {% if contacts %}
             <ul>
@@ -24,4 +18,12 @@
             <p>Нічого не знайдено за запитом "{{ query }}".</p>
         {% endif %}
     {% endif %}
+
+    <form method="GET" action="{% url 'contact_search' %}">
+        <input type="text" name="query" placeholder="Пошук контактів..." value="{% if query %}{{ query }}{% endif %}">
+        <button type="submit">Пошук</button><br>
+    </form>
+    <a href="{% url 'contact_list' %}">Повернутися на список контактів</a><br>
+    <a href="{% url 'contact_home' %}">Повернутися на сторінку керування контактами</a>
+    
 {% endblock %}

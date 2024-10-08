@@ -1,17 +1,28 @@
 {% extends 'base.html' %}
 
-{% block title %}Контакти з наближаючимися днями народженнями{% endblock %}
+{% block title %}Контакти з наближаючими днями народженнями{% endblock %}
 
 {% block content %}
-    <h1>Контакти з наближаючимися днями народженнями</h1>
+    <h1>Контакти з наближаючими днями народженнями</h1>
+
+    <form method="GET">
+        {{ form.period.label }} {{ form.period }}  <!-- Використовуємо форму -->
+        <button type="submit">Показати</button>
+    </form>
+
     <ul>
-        {% for contact in upcoming_birthdays %}
-            <li>
-                <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a> - День народження: {{ contact.birthday }}
-            </li>
-        {% empty %}
-            <li>Немає контактів з наближаючимися днями народження.</li>
-        {% endfor %}
+        {% if upcoming_birthdays %}
+            {% for contact in upcoming_birthdays %}
+                <li>
+                    <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a> - День народження: {{ contact.birthday }}
+                </li>
+            {% endfor %}
+        {% else %}
+            {% if request.GET.period %}
+                <li>Немає контактів з наближаючими днями народження.</li>
+            {% endif %}
+        {% endif %}
     </ul>
+
     <a href="{% url 'contact_home' %}">Повернутися на сторінку керування контактами</a>
 {% endblock %}

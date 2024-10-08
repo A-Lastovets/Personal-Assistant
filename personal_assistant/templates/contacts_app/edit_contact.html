@@ -8,41 +8,29 @@
         {% csrf_token %}
 
         <label for="name">Ім'я:</label>
-        <input type="text" name="name" value="{{ form.name.value|default:'' }}" required>
-        {% if form.name.errors %}
-            <div style="color: red;">{{ form.name.errors|join:', ' }}</div>
-        {% endif %}
-        <br>
+        <input type="text" name="name" value="{{ form.name.value|default:contact.name }}" required><br>
 
         <label for="address">Адреса:</label>
-        <input type="text" name="address" value="{{ form.address.value|default:'' }}" required>
-        {% if form.address.errors %}
-            <div style="color: red;">{{ form.address.errors|join:', ' }}</div>
-        {% endif %}
-        <br>
+        <input type="text" name="address" value="{{ form.address.value|default:contact.address }}" required><br>
 
         <label for="phone_number">Номер телефону:</label>
-        <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}" required>
+        <input type="text" name="phone_number" value="{{ form.phone_number.value|default:contact.phone_number }}" required>
         {% if form.phone_number.errors %}
             <div style="color: red;">{{ form.phone_number.errors|join:', ' }}</div>
         {% endif %}
         <br>
 
         <label for="email">Email:</label>
-        <input type="email" name="email" value="{{ form.email.value|default:'' }}" required>
+        <input type="email" name="email" value="{{ form.email.value|default:contact.email }}" required>
         {% if form.email.errors %}
             <div style="color: red;">{{ form.email.errors|join:', ' }}</div>
         {% endif %}
         <br>
 
         <label for="birthday">День народження:</label>
-        <input type="date" name="birthday" value="{{ form.birthday.value|default_if_none:form.birthday.value|date:'Y-m-d' }}" required>
-        {% if form.birthday.errors %}
-            <div style="color: red;">{{ form.birthday.errors|join:', ' }}</div>
-        {% endif %}
-        <br>
+        <input type="date" name="birthday" value="{{ form.birthday.value|default:contact.birthday|date:'Y-m-d' }}" required><br>
 
-        <button type="submit">Зберегти зміни</button>
+        <button type="submit">Зберегти контакт</button>
     </form>
 
     <a href="{% url 'contact_list' %}">Повернутися на список контактів</a>
