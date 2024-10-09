@@ -25,6 +25,8 @@ env = environ.Env()
 env_file_path = BASE_DIR.parent / '.env'
 env.read_env(env_file_path)
 
+cloudinary.config(cloud_name=env('CLOUDINARY_CLOUD_NAME'), api_key=env(
+    'CLOUDINARY_API_KEY'), api_secret=env('CLOUDINARY_API_SECRET'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/

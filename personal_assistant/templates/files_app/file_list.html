@@ -46,9 +46,11 @@
                 <strong> {{ file.name }} </strong> - {{ file.get_category_display }}
                 <br>
                 {{ file.uploaded_at|date:"Y-m-d H:i:s" }}
+                <a href="{% url 'download_file' file.id %}" class="btn btn-secondary">Скачать</a>
+                <a href="{% url 'delete_file' file.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');">Удалить</a>
             </div>
         </li>
-    {% empty %}
+        {% empty %}
         <li>No files found.</li>
     {% endfor %}
 </ul>

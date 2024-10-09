@@ -5,7 +5,7 @@ from .models import File
 class FileUploadForm(forms.ModelForm):
     class Meta:
         model = File
-        fields = ['name', 'file']
+        fields = ['file']
 
     def save(self, commit=True):
         file_instance = super().save(commit=False)

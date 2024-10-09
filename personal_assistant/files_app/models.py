@@ -14,10 +14,12 @@ class File(models.Model):
 
     name = models.CharField(max_length=255)
     file = cloudinary.models.CloudinaryField('file', blank=False)
+    original_extension = models.CharField(max_length=10, blank=True, null=True)
+    public_id = models.CharField(max_length=255, blank=True, null=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
     preview = cloudinary.models.CloudinaryField(
         'preview', blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
