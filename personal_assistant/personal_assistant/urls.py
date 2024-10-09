@@ -23,4 +23,5 @@ urlpatterns = [
     path('home/', home, name='home'),
     path('contacts/', include('contacts_app.urls')),    # маршрути до додатку контактів
     path('notes/', include('notes_app.urls')),          # маршрути до додатку нотаток
+    path('news/', include('news_app.urls')),            # маршрути до додатку новин
 ]
