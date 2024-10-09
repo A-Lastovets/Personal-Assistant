@@ -21,9 +21,9 @@ def signupuser(request):
             form.save()
             # return redirect(to='users:main')
         else:
-            return render(request, 'templates/users/signup.html', context={"form": form})
+            return render(request, 'users/signup.html', context={"form": form})
 
-    return render(request, 'templates/users/signup.html', context={"form": RegisterForm()})
+    return render(request, 'users/signup.html', context={"form": RegisterForm()})
 
 
 def loginuser(request):
@@ -39,7 +39,7 @@ def loginuser(request):
         login(request, user)
         return redirect(to='users:profile') # it should be changed
 
-    return render(request, 'templates/users/login.html', context={"form": LoginForm()})
+    return render(request, 'users/login.html', context={"form": LoginForm()})
 
 
 @login_required
@@ -58,13 +58,13 @@ def profile(request):
             return redirect(to='users:profile')
 
     profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'templates/users/profile.html', {'profile_form': profile_form})
+    return render(request, 'users/profile.html', {'profile_form': profile_form})
 
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
-    template_name = 'templates/users/password_reset.html'
-    email_template_name = 'templates/users/password_reset_email.html'
-    html_email_template_name = 'templates/users/password_reset_email.html'
+    template_name = 'users/password_reset.html'
+    email_template_name = 'users/password_reset_email.html'
+    html_email_template_name = 'users/password_reset_email.html'
     success_url = reverse_lazy('users:password_reset_done')
     success_message = "An email with instructions to reset your password has been sent to %(email)s."
-    subject_template_name = 'templates/users/password_reset_subject.txt'
+    subject_template_name = 'users/password_reset_subject.txt'
