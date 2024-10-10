@@ -101,3 +101,11 @@ h5 {
     margin: 0 auto; 
     display: block; 
 }
+
+.form-control {
+    margin-bottom: 10px;
+}
+
+button[type="submit"] {
+    margin-top: 10px;
+}

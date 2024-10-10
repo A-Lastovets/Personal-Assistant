@@ -9,6 +9,7 @@ class File(models.Model):
         ('image', 'Image'),
         ('document', 'Document'),
         ('video', 'Video'),
+        ('audio', 'Audio'),
         ('other', 'Other'),
     ]
 
@@ -17,6 +18,7 @@ class File(models.Model):
     original_extension = models.CharField(max_length=10, blank=True, null=True)
     public_id = models.CharField(max_length=255, blank=True, null=True)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    resource_type = models.CharField(max_length=50, null=True, blank=True)
     preview = cloudinary.models.CloudinaryField(
         'preview', blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)

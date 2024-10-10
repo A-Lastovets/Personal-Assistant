@@ -1,3 +1,4 @@
+import cloudinary.exceptions
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
@@ -60,22 +61,11 @@ def upload_file(request):
         if form.is_valid():
             file_instance = form.save(commit=False)
 
-            original_file_name = file_instance.file.name
-            file_extension = os.path.splitext(original_file_name)[1]
-            file_instance.original_extension = file_extension
-            file_instance.name = original_file_name
-
-            if file_extension.lower() in ['.png', '.jpg', '.jpeg', '.gif']:
-                file_instance.category = 'image'
+            if file_instance.category == 'image':
                 resource_type = 'image'
-            elif file_extension.lower() in ['.mp4', '.avi', '.mov']:
-                file_instance.category = 'video'
+            elif file_instance.category in ['video', 'audio']:
                 resource_type = 'video'
-            elif file_extension.lower() in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.csv', '.txt']:
-                file_instance.category = 'document'
-                resource_type = 'raw'
             else:
-                file_instance.category = 'other'
                 resource_type = 'raw'
 
             try:
@@ -87,10 +77,7 @@ def upload_file(request):
 
                 file_instance.file = cloudinary_response['secure_url']
                 file_instance.public_id = cloudinary_response['public_id']
-
-                print(f"Сохраняемый URL: {file_instance.file}")
-                print(f"Сохраняемый public_id: {
-                      file_instance.public_id}")  # Отладка
+                file_instance.resource_type = cloudinary_response['resource_type']
 
                 if file_instance.category == 'video':
                     video_url = cloudinary_response['secure_url']
@@ -107,8 +94,6 @@ def upload_file(request):
                     file_instance.preview = preview_response['secure_url']
 
                 file_instance.save()
-                print(f"Файл сохранён в базе данных с URL: {
-                      file_instance.file}")
                 return redirect('file_list')
             except Exception as e:
                 print(f"Ошибка при загрузке файла: {e}")
@@ -161,28 +146,26 @@ def download_file(request, file_id):
 
 
 def delete_file(request, file_id):
-    file_instance = get_object_or_404(File, id=file_id)
 
+    file_instance = get_object_or_404(File, id=file_id)
     public_id = file_instance.public_id
-    print(f"Удаляем файл с public_id: {public_id}")
+    resource_type = file_instance.resource_type
 
     try:
-        resource_info = cloudinary.api.resource(public_id)
-        print(f"Информация о ресурсе: {resource_info}")
-
-        response = cloudinary.uploader.destroy(public_id, invalidate=True)
+        response = cloudinary.uploader.destroy(
+            public_id, resource_type=resource_type, invalidate=True)
         print(f"Ответ от Cloudinary: {response}")
 
-        if response.get('result') == 'ok':
-            file_instance.delete()
-            return HttpResponse("Файл успешно удалён.", status=204)
-        else:
-            print(f"Ошибка при удалении файла: {response}")
-            return HttpResponse("Ошибка: не удалось удалить файл из Cloudinary.", status=500)
+        if response.get('result') == 'ok' or response.get('result') == 'deleted':
 
-    except cloudinary.exceptions.NotFound:
-        print("Ресурс не найден в Cloudinary.")
-        return HttpResponse("Ошибка: файл не найден в Cloudinary.", status=404)
+            file_instance.delete()
+            return redirect('file_list')
+        else:
+            print(f"Файл не найден или не был удалён. Ответ: {response}")
+            return HttpResponse("Ошибка: файл не найден или не был удалён.", status=404)
+
+    except cloudinary.exceptions.Error as e:
+        return HttpResponse("Ошибка: не удалось получить информацию о файле.", status=500)
     except Exception as e:
-        print(f"Ошибка при удалении файла: {str(e)}")
+        print(f"Ошибка при удалении файла из Cloudinary: {str(e)}")
         return HttpResponse("Ошибка: не удалось удалить файл.", status=500)

@@ -18,13 +18,14 @@
         <option value="image" {% if request.GET.category == 'image' %}selected{% endif %}>Image</option>
         <option value="document" {% if request.GET.category == 'document' %}selected{% endif %}>Document</option>
         <option value="video" {% if request.GET.category == 'video' %}selected{% endif %}>Video</option>
+        <option value="audio" {% if request.GET.category == 'audio' %}selected{% endif %}>Audio</option>
         <option value="other" {% if request.GET.category == 'other' %}selected{% endif %}>Other</option>
     </select>
 </form>
 
 <ul class="file-list">
     {% for file in files %}
-        <li class="file-item">
+        <li class="file-item d-flex justify-content-between align-items-center">
             {% if file.category == 'image' %}
                 <img src="{{ file.file.url }}" alt="{{ file.name }}" class="file-preview" onclick="openImage('{{ file.file.url }}')" onerror="this.onerror=null; this.src='{% static 'files_app/image_placeholder.png' %}';">
             {% elif file.category == 'video' %}
@@ -37,17 +38,26 @@
                     <source src="{{ file.file.url }}" type="video/mp4">
                     Ваш браузер не поддерживает видео.
                 </video>
-            {% elif file.category == 'document' %}
+            {% elif file.category == 'audio' %} 
+            <img src="{% static 'files_app/audio_placeholder.png' %}" alt="Audio" class="file-preview" onerror="this.onerror=null; this.src='{% static 'files_app/doc_placeholder.png' %}';">
+
+            {% elif file.category == 'document' %} 
                 <img src="{% static 'files_app/doc_placeholder.png' %}" alt="Document" class="file-preview" onerror="this.onerror=null; this.src='{% static 'files_app/doc_placeholder.png' %}';">
             {% elif file.category == 'other' %}
-                <img src="{% static 'files_app/doc_placeholder.png' %}" alt="Placeholder" class="file-preview" onerror="this.onerror=null; this.src='{% static 'files_app/doc_placeholder.png' %}';">
+                <img src="{% static 'files_app/doc_placeholder.png' %}" alt="Other" class="file-preview" onerror="this.onerror=null; this.src='{% static 'files_app/doc_placeholder.png' %}';">
             {% endif %}
-            <div class="file-info">
+            <div class="file-info flex-grow-1">
                 <strong> {{ file.name }} </strong> - {{ file.get_category_display }}
                 <br>
                 {{ file.uploaded_at|date:"Y-m-d H:i:s" }}
-                <a href="{% url 'download_file' file.id %}" class="btn btn-secondary">Скачать</a>
-                <a href="{% url 'delete_file' file.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');">Удалить</a>
+            </div>
+            <div class="file-actions">
+                <a href="{% url 'download_file' file.id %}" title="Скачать">
+                    <img src="{% static 'files_app/download.png' %}" alt="Скачать" style="width: 40px; height: auto; margin-left: 10px;"">
+                </a>
+                <a href="{% url 'delete_file' file.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');" title="Удалить">
+                    <img src="{% static 'files_app/delete.png' %}" alt="Удалить" style="width: 30px; height: auto; margin-left: 10px;">
+                </a>
             </div>
         </li>
         {% empty %}
@@ -55,7 +65,7 @@
     {% endfor %}
 </ul>
 
-<!-- Модальное окно для просмотра видео -->
+<!-- Окно для просмотра видео -->
 <div class="modal" id="videoModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -75,7 +85,8 @@
     </div>
 </div>
 
-<!-- Модальное окно для просмотра изображений -->
+
+<!-- Окно для просмотра изображений -->
 <div class="modal" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -93,31 +104,33 @@
 </div>
 
 <script>
-function playVideo(url) {
-    const modalVideo = document.getElementById('modalVideo');
-    modalVideo.src = url;
-    $('#videoModal').modal('show');
-}
-
-function closeVideo() {
-    const modalVideo = document.getElementById('modalVideo');
-    modalVideo.pause();
-    modalVideo.src = "";
-    $('#videoModal').modal('hide');
-}
-
-function openImage(url) {
-    const modalImage = document.getElementById('modalImage');
-    modalImage.src = url;
-    $('#imageModal').modal('show');
-}
-
-function closeImage() {
-    const modalImage = document.getElementById('modalImage');
-    modalImage.src = "";
-    $('#imageModal').modal('hide');
-}
-</script>
+    function playVideo(url) {
+        const modalVideo = document.getElementById('modalVideo');
+        modalVideo.src = url;
+        modalVideo.play();
+        $('#videoModal').modal('show');
+    }
+    
+    function closeVideo() {
+        const modalVideo = document.getElementById('modalVideo');
+        modalVideo.pause();
+        modalVideo.currentTime = 0;
+        modalVideo.src = "";
+    }
+    
+    function openImage(url) {
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = url;
+        $('#imageModal').modal('show');
+    }
+    
+    function closeImage() {
+        const modalImage = document.getElementById('modalImage');
+        modalImage.src = "";
+        $('#imageModal').modal('hide');
+    }
+    </script>
+    
 
 <!-- Пагинация -->
 {% if is_paginated %}
