@@ -4,7 +4,6 @@ from datetime import datetime
 from newsapi import NewsApiClient
 import requests
 
-
 class ExchangeRateView(View):
     def get_exchange_rates(self):
         api_key_to_exchange_rate = '7e7b84e97a8aca30f461303188fdf667'
@@ -67,7 +66,6 @@ class NewsView(View):
             news_by_category[category] = articles
 
         return news_by_category
-
 
 class ExchangeRateNewsView(View):
     template_name = 'news.html'
