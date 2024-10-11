@@ -39,7 +39,7 @@ class ExchangeRateView(View):
 
 class NewsView(View):
     def get_news(self):
-        newsapi = NewsApiClient(api_key='b189317af9df4e1a8d0c052cbd4f1e32')
+        newsapi = NewsApiClient(api_key='435a219a6e2a412ebb8e1c5358571e6d')
         categories = ['business', 'entertainment', 'general',
                       'health', 'science', 'sports', 'technology']
         news_by_category = {}
