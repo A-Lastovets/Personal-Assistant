@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Список загруженных файлов{% endblock %}
+
+<!-- Подключение стилей -->
+<link rel="stylesheet" href="{% static 'css/files_list.css' %}">
+
+{% block content %}
+    <div class="container" style="padding-top: 0;">
+        <h1 class="mb-4 text-center" style="color: #E2B29B;">Список загруженных файлов</h1>
+
+        <div class="d-flex justify-content-center">
+            <div class="card" style="width: 50vw; background-color: #40886E; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);">
+                <div class="card-body text-center">
+                    <a href="{% url 'upload_file' %}" class="btn btn-success mb-3">Загрузить новый файл</a>
+                </div>
+                <ul class="file-list">
+                    {% for file in files %}
+                        <li class="file-item list-group-item">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                {% if file.category == 'image' %}
+                                    <img src="{{ file.file.url }}" alt="Image" class="file-preview" onclick="openImage('{{ file.file.url }}')">
+                                {% elif file.category == 'video' %}
+                                    <img src="{{ file.preview.url }}" alt="Video preview" class="file-preview" onclick="openImage('{{ file.preview.url }}')">
+                                {% elif file.category == 'audio' %}
+                                    <img src="{% static 'files_app/audio_placeholder.png' %}" alt="Audio placeholder" class="file-preview">
+                                {% elif file.category == 'document' %}
+                                    <img src="{% static 'files_app/doc_placeholder.png' %}" alt="Document placeholder" class="file-preview">
+                                {% else %}
+                                    <img src="{% static 'files_app/doc_placeholder.png' %}" alt="Other placeholder" class="file-preview">
+                                {% endif %}
+                                <div class="me-auto">
+                                    <strong>{{ file.name }}</strong> - {{ file.get_category_display }}
+                                    <div class="text-muted" style="font-size: 0.9em;">Загружено: {{ file.uploaded_at|date:"d.m.Y H:i" }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <a href="{% url 'download_file' file.id %}" class="btn btn-outline-primary btn-sm me-2">Скачать</a>
+                                <a href="{% url 'delete_file' file.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');" class="btn btn-outline-danger btn-sm">Удалить</a>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item" style="background-color: #3D6657; color: #E2B29B;">Файлы не найдены.</li>
+                    {% endfor %}
+                </ul>
+
+                <!-- Пагинация -->
+                {% if is_paginated %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if files.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">««</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ files.previous_page_number }}" aria-label="Previous">«</a>
+                            </li>
+                        {% endif %}
+
+                        {% for page_num in files.paginator.page_range %}
+                            <li class="page-item {% if files.number == page_num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if files.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ files.next_page_number }}" aria-label="Next">»</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ files.paginator.num_pages }}" aria-label="Last">»»</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для изображений -->
+    <div class="modal" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Просмотр изображения</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeImage()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" alt="Image preview">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openImage(url) {
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = url;
+            modalImage.style.maxWidth = "66.67%";  // Задаем максимальную ширину изображения
+            modalImage.style.maxHeight = "80vh";   // Задаем максимальную высоту изображения
+            modalImage.style.objectFit = "contain"; // Сохраняем пропорции изображения
+            $('#imageModal').modal('show');
+        }
+
+        function closeImage() {
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = "";
+            $('#imageModal').modal('hide');
+        }
+    </script>
+{% endblock %}
