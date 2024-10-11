@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Контакти - Головна{% endblock %}
+{% block title %}Головна сторінка контактів{% endblock %}
 
 {% block content %}
-    <h1>Керування контактами</h1>
-    <ul>
-        <li><a href="{% url 'add_contact' %}">Додати контакт</a></li>
-        <li><a href="{% url 'contact_list' %}">Список контактів</a></li>
-        <li><a href="{% url 'upcoming_birthdays' %}">Контакти з наближаючимися днями народженнями</a></li>
-        <li><a href="{% url 'contact_search' %}">Пошук контактів</a></li>
-    </ul>
-
+<div class="card contact-form-container" style="text-align: center;">
+    <h1 class="mb-4">Книга контактів</h1>
+    <div class="list-group">
+        <a href="{% url 'contact_list' %}" class="list-group-item list-group-item-action">Список котактів</a>
+        <a href="{% url 'add_contact' %}" class="list-group-item list-group-item-action">Додати контакт</a>
+        <a href="{% url 'upcoming_birthdays' %}" class="list-group-item list-group-item-action">Найближчі дні народження</a>
+        <a href="{% url 'contact_search' %}" class="list-group-item list-group-item-action">Пошук контактів</a>
+    </div>
+</div>
 {% endblock %}

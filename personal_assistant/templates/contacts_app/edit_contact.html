@@ -3,35 +3,16 @@
 {% block title %}Редагувати контакт{% endblock %}
 
 {% block content %}
-    <h1>Редагувати контакт</h1>
+<div class="card contact-form-container mx-auto">   
+    <h1 class="mb-4">Редагувати контакт: {{ contact.name }}</h1>
+
     <form method="POST">
         {% csrf_token %}
-
-        <label for="name">Ім'я:</label>
-        <input type="text" name="name" value="{{ form.name.value|default:contact.name }}" required><br>
-
-        <label for="address">Адреса:</label>
-        <input type="text" name="address" value="{{ form.address.value|default:contact.address }}" required><br>
-
-        <label for="phone_number">Номер телефону:</label>
-        <input type="text" name="phone_number" value="{{ form.phone_number.value|default:contact.phone_number }}" required>
-        {% if form.phone_number.errors %}
-            <div style="color: red;">{{ form.phone_number.errors|join:', ' }}</div>
-        {% endif %}
-        <br>
-
-        <label for="email">Email:</label>
-        <input type="email" name="email" value="{{ form.email.value|default:contact.email }}" required>
-        {% if form.email.errors %}
-            <div style="color: red;">{{ form.email.errors|join:', ' }}</div>
-        {% endif %}
-        <br>
-
-        <label for="birthday">День народження:</label>
-        <input type="date" name="birthday" value="{{ form.birthday.value|default:contact.birthday|date:'Y-m-d' }}" required><br>
-
-        <button type="submit">Зберегти контакт</button>
+        {{ form.as_p }}
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary btn-block" style="flex: 1; margin-right: 10px; padding: 6px 12px; margin-top: 8px;">Зберегти зміни</button>
+            <a href="{% url 'contact_list' %}" class="btn btn-block" style="flex: 1; background-color: #3D6657; border-color: #40886E; color: #fff; padding: 6px 12px; margin-top: 8px;">До списку</a>
+        </div>
     </form>
-
-    <a href="{% url 'contact_list' %}">Повернутися на список контактів</a>
+</div>
 {% endblock %}

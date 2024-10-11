@@ -1,42 +1,55 @@
-{% extends "users/base.html" %}
+{% extends 'base.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Реєстрація{% endblock %}
 
 {% block content %}
+<div class="card" style="background-color: #3D6657; color: #E2B29B;">
+    <div class="card-header" style="background-color: #155840; color: #E2B29B;">
+        <h2 class="text-center">Реєстрація</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username|add_class:"form-control" }}
+                {{ form.username.errors }}
+            </div>
+            <div class="form-group">
+                {{ form.email.label_tag }}
+                {{ form.email|add_class:"form-control" }}
+                {% if form.email.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.email.errors|striptags }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.password1.label_tag }}
+                {{ form.password1|add_class:"form-control" }}
+                {% if form.password1.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.password1.errors|striptags }}
+                {% endif %}
 
-<div>
-    <h2>Sign Up</h2>
+            </div>
+            <div class="form-group">
+                {{ form.password2.label_tag }}
+                {{ form.password2|add_class:"form-control" }}
+                {% if form.password2.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.password2.errors|striptags }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="background-color: #6FBDA2; border: none;">Зареєструватися</button>
+            </div>
+            <div class="form-group text-center">
+                <p>Вже маєте акаунт? <a href="{% url 'users:login' %}" style="color: #E2B29B;">Увійти</a></p>
+            </div>
+        </form>
+    </div>
 </div>
-
-<form method="post" action="{% url 'users:signup' %}">
-    {% csrf_token %}
-    <div>
-        <label> Username:
-            {{ form.username }}
-        </label>
-        <span>{{ form.errors.username }}</span>
-    </div>
-    <div>
-        <label> Email:
-            {{ form.email }}
-        </label>
-        <span>{{ form.errors.email }}</span>
-    </div>
-    <div>
-        <label> Password:
-            {{ form.password1 }}
-        </label>
-        <span>{{ form.errors.password1 }}</span>
-    </div>
-    <div>
-        <label> Password confirmation:
-            {{ form.password2 }}
-        </label>
-        <span>{{ form.errors.password2 }}</span>
-    </div>
-    <div class="grid">
-        <button type="submit">Submit</button>
-        <button type="reset" class="secondary">Reset</button>
-    </div>
-</form>
-
 {% endblock %}
-

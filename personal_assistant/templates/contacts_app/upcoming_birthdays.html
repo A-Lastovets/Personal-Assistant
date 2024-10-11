@@ -1,32 +1,34 @@
 {% extends 'base.html' %}
 
-{% block title %}Контакти з наближаючими днями народженнями{% endblock %}
+{% block title %}Найближчі дні народження{% endblock %}
 
 {% block content %}
-    <h1>Контакти з наближаючими днями народженнями</h1>
+<style>
+    /* Уменьшение паддинга для выпадающего списка */
+    .contact-form-container select.form-control {
+        padding-top: 5px !important;  /* Установите паддинг в 5px с использованием !important */
+        padding-bottom: 5px !important;  /* Установите паддинг в 5px с использованием !important */
+    }
 
-    <form method="GET">
-        {{ form.period.label }} {{ form.period }}  <!-- Використовуємо форму -->
-        <button type="submit">Показати</button>
+</style>
+
+<div class="card contact-form-container">
+    <h1 class="mb-4">Найближчі дні народження</h1>
+
+    <form method="GET" class="mb-4">
+        {{ form.period.label_tag }}
+        {{ form.period }}
+        <button type="submit" class="btn btn-primary">Фільтр</button>
     </form>
 
-    <ul>
-        {% if upcoming_birthdays %}
-            {% for contact in upcoming_birthdays %}
-                <li>
-                    <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a> - День народження: {{ contact.birthday }}
-                </li>
-            {% endfor %}
-        {% else %}
-            <li>
-                {% if request.GET.period %}
-                    Немає контактів з наближаючими днями народження на період {{ request.GET.period }} місяців.
-                {% else %}
-                    Немає контактів з наближаючими днями народження.
-                {% endif %}
+    <ul class="list-group">
+        {% for contact in upcoming_birthdays %}
+            <li class="list-group-item">
+                {{ contact.name }} - {{ contact.birthday }} ({{ contact.days_until_birthday }} днів до дня народження)
             </li>
-        {% endif %}
+        {% empty %}
+            <li class="list-group-item">Відсутні дні народження в найближчий час.</li>
+        {% endfor %}
     </ul>
-    <a href="{% url 'contact_list' %}">Повернутися на список контактів</a><br>
-    <a href="{% url 'contact_home' %}">Повернутися на сторінку керування контактами</a>
+</div>
 {% endblock %}

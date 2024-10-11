@@ -4,6 +4,7 @@ from datetime import datetime
 from newsapi import NewsApiClient
 import requests
 
+
 class ExchangeRateView(View):
     def get_exchange_rates(self):
         api_key_to_exchange_rate = '7e7b84e97a8aca30f461303188fdf667'
@@ -15,24 +16,32 @@ class ExchangeRateView(View):
             response.raise_for_status()
             currency_data = response.json()
 
-            usd_to_uah = round(currency_data['rates']['UAH'] / currency_data['rates']['USD'], 2)
-            eur_to_uah = round(currency_data['rates']['UAH'] / currency_data['rates']['EUR'], 2)
-            pln_to_uah = round(currency_data['rates']['UAH'] / currency_data['rates']['PLN'], 2)
+            # Проверка наличия ключа 'rates' в ответе
+            if 'rates' in currency_data:
+                usd_to_uah = round(
+                    currency_data['rates']['UAH'] / currency_data['rates']['USD'], 2)
+                eur_to_uah = round(
+                    currency_data['rates']['UAH'] / currency_data['rates']['EUR'], 2)
+                pln_to_uah = round(
+                    currency_data['rates']['UAH'] / currency_data['rates']['PLN'], 2)
 
-            return {
-                'usd_to_uah': usd_to_uah,
-                'eur_to_uah': eur_to_uah,
-                'pln_to_uah': pln_to_uah,
-            }
+                return {
+                    'usd_to_uah': usd_to_uah,
+                    'eur_to_uah': eur_to_uah,
+                    'pln_to_uah': pln_to_uah,
+                }
+            else:
+                return {'error': 'Не удалось получить курсы валют. Попробуйте позже.'}
 
         except (requests.exceptions.HTTPError, requests.exceptions.RequestException):
-            return {'error': 'Failed to get exchange rate data. Try again later.'}
+            return {'error': 'Не удалось получить данные о курсах валют. Попробуйте позже.'}
 
 
 class NewsView(View):
     def get_news(self):
         newsapi = NewsApiClient(api_key='b189317af9df4e1a8d0c052cbd4f1e32')
-        categories = ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology']
+        categories = ['business', 'entertainment', 'general',
+                      'health', 'science', 'sports', 'technology']
         news_by_category = {}
 
         for category in categories:
@@ -66,6 +75,7 @@ class NewsView(View):
             news_by_category[category] = articles
 
         return news_by_category
+
 
 class ExchangeRateNewsView(View):
     template_name = 'news.html'

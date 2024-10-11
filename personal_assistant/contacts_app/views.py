@@ -6,15 +6,16 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from .forms import BirthdayFilterForm
 from dateutil.relativedelta import relativedelta
+from django.core.paginator import Paginator
 
 
 def contacts_home(request):
     """
     Головна сторінка для керування контактами.
-    
+
     Args:
         request (HttpRequest): Об'єкт запиту.
-    
+
     Returns:
         HttpResponse: Сторінка для вибору дій з контактами.
     """
@@ -38,10 +39,10 @@ def add_contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('contact_list')  # Перенаправлення на список контактів
+            return redirect('contact_list')
         else:
-            # Повертаємо форму з помилками
             return render(request, 'contacts_app/add_contact.html', {'form': form})
+
     else:
         form = ContactForm()
 
@@ -82,10 +83,10 @@ def edit_contact(request, contact_id):
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
             form.save()
-            return redirect('contact_list')  # Перенаправлення на список контактів
+            # Перенаправлення на список контактів
+            return redirect('contact_list')
         else:
-            # Повертаємо форму з помилками
-            print(form.errors)  # Додатковий лог для відстеження проблем
+            return render(request, 'contacts_app/add_contact.html', {'form': form})
     else:
         form = ContactForm(instance=contact)  # Встановлюємо дані для форми
 
@@ -109,26 +110,17 @@ def delete_contact(request, contact_id):
         HttpResponse: Сторінка підтвердження видалення контакту.
     """
     contact = get_object_or_404(Contact, id=contact_id)
-    if request.method == 'POST':
-        contact.delete()
-        return redirect('contact_list')
-    return render(request, 'contacts_app/delete_contact.html', {'contact': contact})
+    contact.delete()
+    return redirect('contact_list')
 
 
 def contact_list(request):
     """
-    Виводить список всіх контактів.
-
-    Також підтримує пошук за ім'ям, адресою, номером телефону або email.
-
-    Args:
-        request (HttpRequest): Об'єкт запиту.
-
-    Returns:
-        HttpResponse: Сторінка зі списком контактів.
+    Виводить список всіх контактів з можливістю пошуку.
     """
-    query = request.GET.get('search', '')
+    query = request.GET.get('search', '').strip()  # Удаляем лишние пробелы
     contacts = Contact.objects.all()
+
     if query:
         contacts = contacts.filter(
             Q(name__icontains=query) |
@@ -136,7 +128,13 @@ def contact_list(request):
             Q(phone_number__icontains=query) |
             Q(email__icontains=query)
         )
-    return render(request, 'contacts_app/contact_list.html', {'contacts': contacts})
+
+    # Пагинация
+    paginator = Paginator(contacts, 3)
+    page_number = request.GET.get('page')
+    contacts_page = paginator.get_page(page_number)
+
+    return render(request, 'contacts_app/contact_list.html', {'contacts': contacts_page})
 
 
 def contact_search(request):
@@ -149,14 +147,12 @@ def contact_search(request):
     Returns:
         HttpResponse: Сторінка з результатами пошуку контактів або порожнє поле, якщо запиту ще не введено.
     """
-    query = request.GET.get('query')  # Отримати запит із параметрів GET
+    query = request.GET.get('query', '')  # Устанавливаем значение по умолчанию
 
     if query:
-        # Пошук контактів за іменем, що містить запит
         contacts = Contact.objects.filter(name__icontains=query)
     else:
-        # Якщо запит не введено, контактів не відображати
-        contacts = None
+        contacts = []  # Пустой список, если нет запроса
 
     return render(request, 'contacts_app/contact_search.html', {'contacts': contacts, 'query': query})
 
@@ -190,11 +186,13 @@ def upcoming_birthdays(request):
     results = []
     for contact in all_birthdays:
         # Отримуємо день народження в поточному році
-        contact_birthday_current_year = contact.birthday.replace(year=today.year)
+        contact_birthday_current_year = contact.birthday.replace(
+            year=today.year)
 
         # Якщо день народження вже пройшов у цьому році, перевіряємо наступний рік
         if contact_birthday_current_year < today:
-            contact_birthday_next_year = contact.birthday.replace(year=today.year + 1)
+            contact_birthday_next_year = contact.birthday.replace(
+                year=today.year + 1)
         else:
             contact_birthday_next_year = contact_birthday_current_year
 
@@ -212,7 +210,8 @@ def upcoming_birthdays(request):
 
     print(f'Upcoming birthdays: {len(sorted_contacts)} found')  # Для перевірки
 
-    form = BirthdayFilterForm(initial={'period': period})  # Додаємо вибране значення в форму
+    # Додаємо вибране значення в форму
+    form = BirthdayFilterForm(initial={'period': period})
 
     return render(request, 'contacts_app/upcoming_birthdays.html', {
         'upcoming_birthdays': sorted_contacts,  # Передаємо відсортовані контакти

@@ -3,27 +3,28 @@
 {% block title %}Пошук контактів{% endblock %}
 
 {% block content %}
-    <h1>Пошук контактів</h1>
+<style>
+        ::placeholder{
+        color: #e2b19b9a !important;
+    }
+</style>
 
-    {% if query %}
-        {% if contacts %}
-            <ul>
-                {% for contact in contacts %}
-                    <li>
-                        <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Нічого не знайдено за запитом "{{ query }}".</p>
-        {% endif %}
-    {% endif %}
+<div class="card contact-form-container">
+    <h1 class="mb-4">Пошук контактів</h1>
 
-    <form method="GET" action="{% url 'contact_search' %}">
-        <input type="text" name="query" placeholder="Пошук контактів..." value="{% if query %}{{ query }}{% endif %}">
-        <button type="submit">Пошук</button><br>
+    <form method="GET" class="mb-4">
+        <input type="text" name="query" placeholder="Пошук за ім'ям" class="form-control" value="{{ query }}">
+        <button type="submit" class="btn btn-primary mt-2">Пошук</button>
     </form>
-    <a href="{% url 'contact_list' %}">Повернутися на список контактів</a><br>
-    <a href="{% url 'contact_home' %}">Повернутися на сторінку керування контактами</a>
-    
+
+    <ul class="list-group">
+        {% for contact in contacts %}
+            <li class="list-group-item">
+                <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Відсутні результати</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
