@@ -6,23 +6,31 @@
     <div class="container mt-4">
         <h1 class="mb-4">Редагувати нотатку</h1>
 
-        {% if not note %}
-            <p>Немає нотаток для редагування.</p>
-            <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3">Назад до списку нотаток</a>
-        {% else %}
-            <!-- Форма для редагування нотатки -->
-            <form method="POST" class="form-group">
-                {% csrf_token %}
-                
-                <!-- Відображення полів форми -->
-                {{ form.as_p }}
-
-                <!-- Кнопка збереження змін -->
-                <button type="submit" class="btn btn-primary mt-3">Зберегти зміни</button>
-            </form>
-
-            <!-- Посилання для повернення до списку нотаток -->
-            <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3">Назад до списку нотаток</a>
+        <!-- Перевірка, чи є повідомлення -->
+        {% if messages %}
+            <div class="alert alert-success">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
         {% endif %}
+
+        <!-- Форма для редагування нотатки -->
+        <form method="POST" class="form-group">
+            {% csrf_token %}
+            
+            <!-- Відображення полів форми -->
+            {{ form.title.label }} {{ form.title }}<br>
+            {{ form.content.label }} {{ form.content }}<br>
+            
+            <label for="id_tags">Теги:</label><br>
+            {{ form.tags }}<br>
+
+            <!-- Кнопка збереження змін -->
+            <button type="submit" class="btn btn-primary mt-3">Зберегти зміни</button>
+        </form>
+
+        <!-- Посилання для повернення до списку нотаток -->
+        <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3">Назад до списку нотаток</a>
     </div>
 {% endblock %}

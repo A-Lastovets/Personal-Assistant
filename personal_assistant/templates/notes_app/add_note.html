@@ -20,14 +20,20 @@
             {% csrf_token %}
 
             <!-- Відображення полів форми -->
-            {{ form.title.label }} {{ form.title }}<br>
-            {{ form.content.label }} {{ form.content }}<br>
+            <div class="mb-3">
+                <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+                {{ form.title }}  <!-- Поле для заголовка -->
+            </div>
 
-            <!-- Додайте поле для вибору item -->
-            {{ form.item.label }} {{ form.item }}<br>  <!-- Поле для вибору елемента -->
-            
-            <label for="id_tags">Теги:</label><br>
-            {{ form.tags }}<br>
+            <div class="mb-3">
+                <label for="{{ form.content.id_for_label }}" class="form-label">{{ form.content.label }}</label>
+                {{ form.content }}  <!-- Поле для контенту -->
+            </div>
+
+            <div class="mb-3">
+                <label for="id_tags" class="form-label">{{ form.tags.label }}</label>
+                {{ form.tags }}  <!-- Поле для тегів -->
+            </div>
 
             <!-- Кнопка додавання -->
             <button type="submit" class="btn btn-primary mt-3">Додати нотатку</button>

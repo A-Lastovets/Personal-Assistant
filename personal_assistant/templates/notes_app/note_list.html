@@ -24,8 +24,7 @@
             </ul>
 
         <!-- Кнопка для додавання нової нотатки -->
-        <a href="{% url 'add_note' %}" class="btn btn-success mb-4">Додати нотатку</a>
-
+        <a href="{% url 'add_note' %}" class="btn btn-success mb-4">Додати нотатку</a><br>
         <!-- Форма для пошуку нотаток -->
         <form method="get" class="mb-4 d-flex">
             <input type="text" name="q" placeholder="Пошук..." class="form-control me-2" value="{{ request.GET.q }}">

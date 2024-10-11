@@ -30,7 +30,7 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
-  web:
+  web:                                # Контейнер web відповідає за запуск веб-додатку на базі Django
     container_name: assistant_web
     build: .
     ports:
@@ -41,8 +41,12 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
 
-volumes:
+volumes:           # секція volumes використовується для зберігання даних PostgreSQL та pgAdmin за межами контейнерів
   pgdata:
     driver: local  # Створення локального volume для зберігання даних PostgreSQL
   pgadmin_data:
     driver: local  # Volume для зберігання даних pgAdmin
+
+# Загалом, чому потрібні volumes: Зберігають дані між перезапусками контейнерів. 
+# У разі видалення або оновлення контейнерів ваші бази даних і налаштування залишаться. 
+# Оскільки дані зберігаються на хості, їх легше резервно копіювати.

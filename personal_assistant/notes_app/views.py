@@ -1,19 +1,31 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Note 
+from .models import Note, Tag
 from .forms import NoteForm
+from django.contrib import messages
 
 def note_home(request):
     notes = Note.objects.all()
     return render(request, 'notes_app/note_home.html', {'notes': notes})
 
 def add_note(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = NoteForm(request.POST)
         if form.is_valid():
-            form.save()  # Зберігаємо нотатку разом з тегами
+            note = form.save(commit=False)
+            note.save()
+
+            # Обробка тегів
+            tags_str = form.cleaned_data.get('tags')
+            if tags_str:
+                tags_list = [tag.strip() for tag in tags_str.split(',')]
+                for tag_name in tags_list:
+                    tag, created = Tag.objects.get_or_create(name=tag_name)
+                    note.tags.add(tag)
+
             return redirect('note_list')
     else:
         form = NoteForm()
+
     return render(request, 'notes_app/add_note.html', {'form': form})
 
 def note_list(request):
@@ -26,12 +38,25 @@ def note_list(request):
     return render(request, 'notes_app/note_list.html', {'notes': notes})
 
 def edit_note(request, note_id):
-    note = get_object_or_404(Note, id=note_id)
+    note = get_object_or_404(Note, pk=note_id)
     if request.method == "POST":
         form = NoteForm(request.POST, instance=note)
         if form.is_valid():
-            form.save()
-            return redirect('note_list')
+            note = form.save()
+            # Обробка тегів
+            tags_data = form.cleaned_data['tags']
+            tags = [tag.strip() for tag in tags_data.split(',') if tag.strip()]  # Додано перевірку на непорожні теги
+            
+            note.tags.clear()  # Очищення існуючих тегів
+            for tag in tags:
+                # Перевірка, чи тег є валідним рядком
+                if tag:
+                    tag_obj, created = Tag.objects.get_or_create(name=tag)  # Створення або отримання тегу
+                    note.tags.add(tag_obj)  # Додавання тегу до нотатки
+            note.save()  # Збереження нотатки
+            
+            messages.success(request, 'Нотатку успішно оновлено!')
+            return redirect('notes_app:note_detail', pk=note.pk)
     else:
         form = NoteForm(instance=note)
     return render(request, 'notes_app/edit_note.html', {'form': form})
