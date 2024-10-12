@@ -18,8 +18,6 @@ def signupuser(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(
-                request, 'Регистрация прошла успешно! Теперь можете войти в систему.')
             return redirect(to='users:login')
         else:
             return render(request, 'users/signup.html', context={"form": form})
@@ -29,19 +27,20 @@ def signupuser(request):
 
 def loginuser(request):
     if request.user.is_authenticated:
-        return redirect(to='users:profile')  # it should be changed
+        return redirect(to='users:profile')
 
     if request.method == 'POST':
-        user = authenticate(
-            username=request.POST['username'], password=request.POST['password'])
-        if user is None:
-            messages.error(request, 'Username or password didn\'t match')
-            return redirect(to='users:login')
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect(to='home')
+        else:
+            messages.error(
+                request, 'Логін або пароль не вірні. Спробуйте ще раз.')
+            return render(request, 'users/login.html', context={"form": form})
 
-        login(request, user)
-        return redirect(to='users:profile')  # it should be changed
-
-    return render(request, 'users_app/login.html', context={"form": LoginForm()})
+    return render(request, 'users/login.html', context={"form": LoginForm()})
 
 
 @login_required
@@ -57,11 +56,11 @@ def profile(request):
             request.POST, request.FILES, instance=request.user.profile)
         if profile_form.is_valid():
             profile_form.save()
-            messages.success(request, 'Your profile is updated successfully')
+            messages.success(request, 'Профіль оновлено успішно!')
             return redirect(to='users:profile')
 
     profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'users_app/profile.html', {'profile_form': profile_form})
+    return render(request, 'users/profile.html', {'profile_form': profile_form})
 
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
@@ -69,5 +68,5 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     email_template_name = 'users/password_reset_email.html'
     html_email_template_name = 'users/password_reset_email.html'
     success_url = reverse_lazy('users:password_reset_done')
-    success_message = "An email with instructions to reset your password has been sent to %(email)s."
+    success_message = "Лист з інструкціями для зміни паролю відправлено на пошту %(email)s."
     subject_template_name = 'users/password_reset_subject.txt'

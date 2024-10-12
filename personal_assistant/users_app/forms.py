@@ -45,6 +45,18 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+        labels = {
+            'username': 'Ім’я користувача',
+            'email': 'Електронна пошта',
+            'password1': 'Пароль',
+            'password2': 'Підтвердження пароля',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(
+            *args, **kwargs)
+        for field, label in self.Meta.labels.items():
+            self.fields[field].label = label
 
 
 class LoginForm(AuthenticationForm):
@@ -66,6 +78,15 @@ class LoginForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ['username', 'password']
+        labels = {
+            'username': 'Ім’я користувача',
+            'password': 'Пароль',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        for field, label in self.Meta.labels.items():
+            self.fields[field].label = label
 
 
 class ProfileForm(forms.ModelForm):
@@ -78,3 +99,6 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['avatar']
+        labels = {
+            'avatar': 'Аватар',
+        }

@@ -7,7 +7,7 @@ import requests
 
 class ExchangeRateView(View):
     def get_exchange_rates(self):
-        api_key_to_exchange_rate = '7e7b84e97a8aca30f461303188fdf667'
+        api_key_to_exchange_rate = 'c5733a77747980d8a23de9c56352963e'
         exchange_rate_url = (f'http://data.fixer.io/api/latest?access_key={api_key_to_exchange_rate}'
                              f'&symbols=USD,EUR,PLN,UAH')
 
