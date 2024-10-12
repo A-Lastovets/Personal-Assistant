@@ -4,9 +4,8 @@
 
 {% block content %}
     <div class="container mt-4">
-        <h1 class="mb-4">Редагувати нотатку</h1>
+        <h1 class="mb-4">Редагувати нотатку: {{ note.title }}</h1>
 
-        <!-- Перевірка, чи є повідомлення -->
         {% if messages %}
             <div class="alert alert-success">
                 {% for message in messages %}
@@ -15,22 +14,26 @@
             </div>
         {% endif %}
 
-        <!-- Форма для редагування нотатки -->
         <form method="POST" class="form-group">
             {% csrf_token %}
-            
-            <!-- Відображення полів форми -->
             {{ form.title.label }} {{ form.title }}<br>
             {{ form.content.label }} {{ form.content }}<br>
-            
-            <label for="id_tags">Теги:</label><br>
+
+            <label for="id_tags">Виберіть теги:</label><br>
             {{ form.tags }}<br>
 
-            <!-- Кнопка збереження змін -->
+            <!-- Кнопки для видалення тегів -->
+            {% for tag in tags %}
+            <span>{{ tag.name }}</span>
+            <a href="{% url 'delete_tags' tag.id %}" class="btn btn-warning mt-3">Видалити тег</a><br>
+            {% endfor %}
+
+            <label for="new_tags">Або додайте нові теги (через кому):</label><br>
+            <input type="text" name="new_tags" class="form-control" placeholder="Введіть нові теги"><br>
+
             <button type="submit" class="btn btn-primary mt-3">Зберегти зміни</button>
         </form>
 
-        <!-- Посилання для повернення до списку нотаток -->
         <a href="{% url 'note_list' %}" class="btn btn-secondary mt-3">Назад до списку нотаток</a>
     </div>
 {% endblock %}

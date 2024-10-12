@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Видалити тег{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1>Видалити тег "{{ tag.name }}"?</h1>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="note_id" value="{{ 'edit_note' note.id }}">  <!-- Переконайтеся, що note_id передається -->
+            <button type="submit" class="btn btn-danger">Підтвердити видалення</button>
+        </form>
+
+        <a href="{% url 'note_list' %}" class="btn btn-secondary">Скасувати</a>
+    </div>
+{% endblock %}
