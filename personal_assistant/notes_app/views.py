@@ -60,18 +60,24 @@ def add_note(request):
 @login_required
 def note_list(request):
     query = request.GET.get('q')
-    # Фильтруем заметки по текущему пользователю
+    tag_query = request.GET.get('tag')  # Додати параметр для пошуку за тегами
+    # Фільтруємо нотатки за поточним користувачем
     notes = Note.objects.filter(created_by=request.user)
 
     if query:
-        # Используем distinct() для исключения дубликатов
-        notes = notes.filter(title__icontains=query).distinct()
+        # Фільтруємо за заголовком або тегами
+        notes = notes.filter(
+            Q(title__icontains=query) | Q(tags__name__icontains=query)
+        ).distinct()
+
+    if tag_query:
+        notes = notes.filter(tags__name__icontains=tag_query).distinct()
 
     paginator = Paginator(notes, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'notes_app/note_list.html', {'page_obj': page_obj, 'query': query})
+    return render(request, 'notes_app/note_list.html', {'page_obj': page_obj, 'query': query, 'tag_query': tag_query})
 
 
 @login_required
