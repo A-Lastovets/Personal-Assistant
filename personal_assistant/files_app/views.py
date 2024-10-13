@@ -31,7 +31,9 @@ class FileListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        queryset = super().get_queryset().order_by('-uploaded_at')
+        # Ограничиваем выборку файлами текущего пользователя
+        queryset = super().get_queryset().filter(
+            user=self.request.user).order_by('-uploaded_at')
         category = self.request.GET.get('category')
 
         if category == 'all' or not category:
@@ -59,7 +61,7 @@ def upload_file(request):
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            file_instance = form.save(commit=False)
+            file_instance = form.save(commit=False, user=request.user)
 
             if file_instance.category == 'image':
                 resource_type = 'image'

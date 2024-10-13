@@ -8,9 +8,9 @@ class FileUploadForm(forms.ModelForm):
         model = File
         fields = ['file']
 
-    def save(self, commit=True):
+    def save(self, commit=True, user=None):
         file_instance = super().save(commit=False)
-
+        file_instance.user = user
         file_name = file_instance.file.name.lower()
         file_extension = os.path.splitext(file_name)[1]
 

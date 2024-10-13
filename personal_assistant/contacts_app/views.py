@@ -38,11 +38,10 @@ def add_contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            form.save()
+            contact = form.save(commit=False)
+            contact.user = request.user  # Устанавливаем текущего пользователя
+            contact.save()
             return redirect('contact_list')
-        else:
-            return render(request, 'contacts_app/add_contact.html', {'form': form})
-
     else:
         form = ContactForm()
 
@@ -60,7 +59,8 @@ def contact_detail(request, contact_id):
     Returns:
         HttpResponse: Сторінка з деталями контакту.
     """
-    contact = get_object_or_404(Contact, id=contact_id)
+    contact = get_object_or_404(
+        Contact, id=contact_id, user=request.user)  # Проверка пользователя
     return render(request, 'contacts_app/contact_detail.html', {'contact': contact})
 
 
@@ -77,22 +77,20 @@ def edit_contact(request, contact_id):
     Returns:
         HttpResponse: Сторінка з формою для редагування контакту.
     """
-    contact = get_object_or_404(Contact, id=contact_id)
+    contact = get_object_or_404(
+        Contact, id=contact_id, user=request.user)  # Проверка пользователя
 
     if request.method == 'POST':
         form = ContactForm(request.POST, instance=contact)
         if form.is_valid():
             form.save()
-            # Перенаправлення на список контактів
             return redirect('contact_list')
-        else:
-            return render(request, 'contacts_app/add_contact.html', {'form': form})
     else:
-        form = ContactForm(instance=contact)  # Встановлюємо дані для форми
+        form = ContactForm(instance=contact)
 
     return render(request, 'contacts_app/edit_contact.html', {
         'form': form,
-        'contact': contact  # Передаємо контакт для шаблону
+        'contact': contact
     })
 
 
@@ -109,7 +107,8 @@ def delete_contact(request, contact_id):
     Returns:
         HttpResponse: Сторінка підтвердження видалення контакту.
     """
-    contact = get_object_or_404(Contact, id=contact_id)
+    contact = get_object_or_404(
+        Contact, id=contact_id, user=request.user)  # Проверка пользователя
     contact.delete()
     return redirect('contact_list')
 
@@ -118,8 +117,9 @@ def contact_list(request):
     """
     Виводить список всіх контактів з можливістю пошуку.
     """
-    query = request.GET.get('search', '').strip()  # Удаляем лишние пробелы
-    contacts = Contact.objects.all()
+    query = request.GET.get('search', '').strip()
+    contacts = Contact.objects.filter(
+        user=request.user)  # Фильтруем по пользователю
 
     if query:
         contacts = contacts.filter(
@@ -129,7 +129,6 @@ def contact_list(request):
             Q(email__icontains=query)
         )
 
-    # Пагинация
     paginator = Paginator(contacts, 3)
     page_number = request.GET.get('page')
     contacts_page = paginator.get_page(page_number)

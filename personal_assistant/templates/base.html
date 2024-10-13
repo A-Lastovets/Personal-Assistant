@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'pagination.css' %}">
     <link rel="stylesheet" href="{% static 'contacts_app/add_contact.css' %}">
     <link rel="stylesheet" href="{% static 'contacts_app/contacts_list.css' %}">
+    <link rel="stylesheet" href="{% static 'files_app/files_app.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap" rel="stylesheet">
@@ -30,13 +31,10 @@
                         <a class="nav-link" href="{% url 'contact_home' %}" style="color: #E2B29B;">Контакти</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="color: #E2B29B;">Нотатки</a>
+                        <a class="nav-link" href="{% url 'note_home' %}" style="color: #E2B29B;">Нотатки</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'file_list' %}" style="color: #E2B29B;">Хмарне сховище</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" style="color: #E2B29B;">Новини</a>
                     </li>
                 {% endif %}
             </ul>

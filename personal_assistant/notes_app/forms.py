@@ -1,12 +1,19 @@
 from django import forms
-from .models import Note, Tag, Item
+from .models import Note, Tag
+
 
 class NoteForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Теги'
+    )
+
     class Meta:
         model = Note
-        fields = ['title', 'content', 'item', 'tags']  # Додайте поле item
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['item'].queryset = Item.objects.all()  # Заповніть queryset для item
-        self.fields['tags'].queryset = Tag.objects.all()  # Заповніть queryset для тегів
+        fields = ['title', 'content', 'tags']
+        labels = {
+            'title': 'Заголовок',
+            'content': 'Описание',
+        }

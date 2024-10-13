@@ -1,18 +1,85 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Список загруженных файлов{% endblock %}
+{% block title %}Список завантажених файлів{% endblock %}
 
 <link rel="stylesheet" href="{% static 'css/files_list.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> <!-- Підключення Bootstrap Icons -->
+
+<style>
+    .btn-close-custom {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #E2B29B; /* Колір хрестика */
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .btn-close-custom:hover {
+        color: #CA825F; /* Колір при наведенні */
+    }
+
+    .btn-close-custom:focus {
+        outline: none;
+    }
+
+    .btn-download {
+        background-color: #6FBDA2; /* Основний колір для кнопки "Завантажити" */
+        color: white;
+    }
+
+    .btn-download:hover {
+        background-color: #40886E; /* Колір при наведенні для кнопки "Завантажити" */
+    }
+
+    .btn-delete {
+        background-color: #CA825F; /* Основний колір для кнопки "Видалити" */
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background-color: #986F5B; /* Колір при наведенні для кнопки "Видалити" */
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+    .page-item {
+        margin: 0 0.2rem;
+    }
+
+    .page-link {
+        background-color: #3D6657; /* Цвет фона кнопки */
+        color: #E2B29B; /* Цвет текста */
+        border-radius: 5px; /* Закругленные углы */
+        padding: 0.5rem 1rem;
+        transition: background-color 0.3s ease, color 0.3s ease; /* Плавный переход */
+    }
+
+    .page-link:hover {
+        background-color: #6FBDA2; /* Цвет фона при наведении */
+        color: white; /* Цвет текста при наведении */
+    }
+
+    .page-item.active .page-link {
+        background-color: #40886E; /* Цвет для активной страницы */
+        color: white; /* Цвет текста для активной страницы */
+        pointer-events: none; /* Запретить клики на активной странице */
+    }
+</style>
 
 {% block content %}
-    <div class="container" style="padding-top: 0;">
-        <h1 class="mb-4 text-center" style="color: #E2B29B;">Список загруженных файлов</h1>
+    <div class="container card" style="padding-top: 0;">
+        <h1 class="mb-4 text-center" style="color: #E2B29B; padding-top: 3%;">Список завантажених файлів</h1>
 
         <div class="d-flex justify-content-center">
             <div class="card" style="width: 50vw; background-color: #40886E; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);">
                 <div class="card-body text-center">
-                    <a href="{% url 'upload_file' %}" class="btn btn-success mb-3">Загрузить новый файл</a>
+                    <a href="{% url 'upload_file' %}" class="btn btn-success mb-3" style=" color: #E2B29B;background-color: #3D6657; border: none">Завантажити новий файл</a>
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for file in files %}
@@ -21,7 +88,7 @@
                                 {% if file.category == 'image' %}
                                     <img src="{{ file.file.url }}" alt="Image" class="img-thumbnail me-3" style="width: 70px; height: 70px;" onclick="openImage('{{ file.file.url }}')">
                                 {% elif file.category == 'video' %}
-                                    <img src="{{ file.preview.url }}" alt="Video preview" class="img-thumbnail me-3" style="width: 70px; height: 70px;" onclick="openImage('{{ file.preview.url }}')">
+                                    <img src="{{ file.preview.url }}" alt="Video preview" class="img-thumbnail me-3" style="width: 70px; height: 70px;" onclick="openVideo('{{ file.file.url }}')">
                                 {% elif file.category == 'audio' %}
                                     <img src="{% static 'files_app/audio_placeholder.png' %}" alt="Audio placeholder" class="img-thumbnail me-3" style="width: 70px; height: 70px;">
                                 {% elif file.category == 'document' %}
@@ -31,23 +98,23 @@
                                 {% endif %}
                                 <div class="me-auto">
                                     <strong>{{ file.name }}</strong> - {{ file.get_category_display }}
-                                    <div class="text-muted" style="font-size: 0.9em;">Загружено: {{ file.uploaded_at|date:"d.m.Y H:i" }}</div>
+                                    <div class="text-muted" style="font-size: 0.9em;">Завантажено: {{ file.uploaded_at|date:"d.m.Y H:i" }}</div>
                                 </div>
                             </div>
                             <div class="d-flex">
-                                <a href="{% url 'download_file' file.id %}" class="btn btn-outline-primary btn-sm me-2">Скачать</a>
-                                <a href="{% url 'delete_file' file.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');" class="btn btn-outline-danger btn-sm">Удалить</a>
+                                <a href="{% url 'download_file' file.id %}" class="btn btn-download btn-sm me-2" style="color: white; background-color: #E2B29B;">Завантажити</a>
+                                <a href="{% url 'delete_file' file.id %}" onclick="return confirm('Ви впевнені, що хочете видалити цей файл?');" class="btn btn-delete btn-sm">Видалити</a>
                             </div>
                         </li>
                     {% empty %}
-                        <li class="list-group-item" style="background-color: #3D6657; color: #E2B29B;">Файлы не найдены.</li>
+                        <li class="list-group-item" style="background-color: #3D6657; color: #E2B29B;">Файли не знайдено.</li>
                     {% endfor %}
                 </ul>
 
                 <!-- Пагинация -->
                 {% if is_paginated %}
                 <nav aria-label="Page navigation" class="mt-4">
-                    <ul class="pagination justify-content-center">
+                    <ul class="pagination">
                         {% if files.has_previous %}
                             <li class="page-item">
                                 <a class="page-link" href="?page=1" aria-label="First">««</a>
@@ -59,7 +126,11 @@
 
                         {% for page_num in files.paginator.page_range %}
                             <li class="page-item {% if files.number == page_num %}active{% endif %}">
-                                <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                {% if files.number == page_num %}
+                                    <span>{{ page_num }}</span>
+                                {% else %}
+                                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                {% endif %}
                             </li>
                         {% endfor %}
 
@@ -74,20 +145,26 @@
                     </ul>
                 </nav>
                 {% endif %}
+
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно для изображений -->
+    <!-- Модальне вікно для зображень і відео -->
     <div class="modal" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content card">
                 <div class="modal-header">
-                    <h5 class="modal-title">Просмотр изображения</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeImage()"></button>
+                    <h5 class="modal-title">Перегляд файлу</h5>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close" onclick="closeFile()">
+                        <i class="bi bi-x-lg"></i> <!-- Іконка хрестика -->
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <img id="modalImage" class="img-fluid" alt="Image preview" style="max-width: 66.67%; max-height: 66.67%; object-fit: contain;">
+                <div class="modal-body" style="padding: 0; text-align: center;">
+                    <!-- Для зображень -->
+                    <img id="modalImage" class="img-fluid" alt="Image preview" style="display: none;">
+                    <!-- Для відео -->
+                    <video id="modalVideo" controls style="width: 100%; height: auto; max-height: 80vh; display: none;"></video>
                 </div>
             </div>
         </div>
@@ -96,14 +173,27 @@
     <script>
         function openImage(url) {
             const modalImage = document.getElementById('modalImage');
+            const modalVideo = document.getElementById('modalVideo');
+            modalVideo.style.display = 'none';  // Сховати відео, якщо воно було відображено
+            modalImage.style.display = 'block';  // Відобразити зображення
             modalImage.src = url;
             $('#imageModal').modal('show');
         }
 
-        function closeImage() {
+        function openVideo(url) {
             const modalImage = document.getElementById('modalImage');
-            modalImage.src = "";
-            $('#imageModal').modal('hide');
+            const modalVideo = document.getElementById('modalVideo');
+            modalImage.style.display = 'none';  // Сховати зображення, якщо воно було відображено
+            modalVideo.style.display = 'block';  // Відобразити відео
+            modalVideo.src = url;
+            $('#imageModal').modal('show');
+        }
+
+        function closeFile() {
+            const modalImage = document.getElementById('modalImage');
+            const modalVideo = document.getElementById('modalVideo');
+            modalImage.style.display = 'none';
+            modalVideo.style.display = 'none';
         }
     </script>
 {% endblock %}

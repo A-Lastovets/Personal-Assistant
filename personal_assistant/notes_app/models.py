@@ -1,23 +1,23 @@
 from django.db import models
-from django.utils import timezone
+from django.conf import settings
+from django.contrib.auth.models import User
 
-class Item(models.Model):
-    name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.name
 class Tag(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=100, unique=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
 
 class Note(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, blank=True) 
-    tags = models.ManyToManyField(Tag, related_name='notes')
-    created_at = models.DateTimeField(default=timezone.now)
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag)
+
     def __str__(self):
         return self.title
