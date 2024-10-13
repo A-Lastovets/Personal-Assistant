@@ -9,10 +9,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 
+from personal_assistant.views import HomePageView
+
 
 def signupuser(request):
     if request.user.is_authenticated:
-        return redirect(to='users:profile')
+        return redirect(to='home')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -27,7 +29,7 @@ def signupuser(request):
 
 def loginuser(request):
     if request.user.is_authenticated:
-        return redirect(to='users:profile')
+        return redirect(to='home')
 
     if request.method == 'POST':
         form = LoginForm(data=request.POST)

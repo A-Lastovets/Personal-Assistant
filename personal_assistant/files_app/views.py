@@ -133,8 +133,7 @@ def download_file(request, file_id):
         file_extension = file_instance.original_extension or file_extension
 
         download_response = HttpResponse(response.content)
-        download_response['Content-Disposition'] = f'attachment; filename="{
-            file_name}{file_extension}"'
+        download_response['Content-Disposition'] = f'attachment; filename="{file_name}{file_extension}"'
         download_response['Content-Type'] = content_type
 
         return download_response
