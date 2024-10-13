@@ -27,8 +27,6 @@ env = environ.Env()
 env_file_path = BASE_DIR.parent / '.env'
 env.read_env(env_file_path)
 
-cloudinary.config(cloud_name=env('CLOUDINARY_CLOUD_NAME'), api_key=env(
-    'CLOUDINARY_API_KEY'), api_secret=env('CLOUDINARY_API_SECRET'), secure=True)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -38,7 +36,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -86,18 +84,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'personal_assistant.wsgi.application'
 
+cloudinary.config(cloud_name=env("CLOUDINARY_CLOUD_NAME"), api_key=env(
+    "CLOUDINARY_API_KEY"), api_secret=env("CLOUDINARY_API_SECRET"), secure=True)
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': env('POSTGRES_DB_NAME'),
+    #     'USER': env('POSTGRES_DB_USER'),
+    #     'PASSWORD': env('POSTGRES_DB_PASSWORD'),
+    #     'HOST': env('POSTGRES_DB_HOST'),
+    #     'PORT': env('POSTGRES_DB_PORT'),
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT')
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('KOYEB_DB_NAME'),
+        'USER': env('KOYEB_DB_USER'),
+        'PASSWORD': env('KOYEB_DB_PASSWORD'),
+        'HOST': env('KOYEB_DB_HOST'),
+        'OPTIONS': {'sslmode': 'require'},
     }
 }
 
@@ -118,7 +126,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("EMAIL_HOST")

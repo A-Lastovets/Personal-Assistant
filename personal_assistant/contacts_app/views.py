@@ -21,7 +21,7 @@ def contacts_home(request):
     """
     return render(request, 'contacts_app/contact_home.html')
 
-
+@login_required
 def add_contact(request):
     """
     Створення нового контакту.
@@ -47,7 +47,7 @@ def add_contact(request):
 
     return render(request, 'contacts_app/add_contact.html', {'form': form})
 
-
+@login_required
 def contact_detail(request, contact_id):
     """
     Показує деталі конкретного контакту.
@@ -63,7 +63,7 @@ def contact_detail(request, contact_id):
         Contact, id=contact_id, user=request.user)  # Проверка пользователя
     return render(request, 'contacts_app/contact_detail.html', {'contact': contact})
 
-
+@login_required
 def edit_contact(request, contact_id):
     """
     Редагування існуючого контакту.
@@ -93,7 +93,7 @@ def edit_contact(request, contact_id):
         'contact': contact
     })
 
-
+@login_required
 def delete_contact(request, contact_id):
     """
     Видалення контакту.
@@ -112,7 +112,7 @@ def delete_contact(request, contact_id):
     contact.delete()
     return redirect('contact_list')
 
-
+@login_required
 def contact_list(request):
     """
     Виводить список всіх контактів з можливістю пошуку.
@@ -135,7 +135,7 @@ def contact_list(request):
 
     return render(request, 'contacts_app/contact_list.html', {'contacts': contacts_page})
 
-
+@login_required
 def contact_search(request):
     """
     Пошук контактів за переданим запитом.
@@ -155,7 +155,7 @@ def contact_search(request):
 
     return render(request, 'contacts_app/contact_search.html', {'contacts': contacts, 'query': query})
 
-
+@login_required
 def upcoming_birthdays(request):
     """
     Отримує контакти з наближаючими днями народження в обраному періоді.
@@ -180,7 +180,8 @@ def upcoming_birthdays(request):
     print(f'Today: {today}, End date: {end_date}')  # Для перевірки
 
     # Витягуємо всі контакти
-    all_birthdays = Contact.objects.all()
+    all_birthdays = Contact.objects.filter(
+        user=request.user)
 
     results = []
     for contact in all_birthdays:

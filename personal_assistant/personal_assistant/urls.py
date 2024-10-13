@@ -21,9 +21,9 @@ from django.urls import path, include
 from .views import HomePageView
 
 urlpatterns = [
-    path('admin', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('', HomePageView.as_view(), name='home'),
-    path('home', HomePageView.as_view(), name='home'),
+    path('home/', HomePageView.as_view(), name='home'),
     path('contacts/', include('contacts_app.urls')),
     path('notes/', include('notes_app.urls')),
     path('news/', include('news_app.urls')),
