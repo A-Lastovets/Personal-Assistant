@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Редагувати контакт{% endblock %}
+
+{% block content %}
+<div class="card contact-form-container mx-auto">   
+    <h1 class="mb-4">Редагувати контакт: {{ contact.name }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary btn-block" style="flex: 1; margin-right: 10px; padding: 6px 12px; margin-top: 8px;">Зберегти зміни</button>
+            <a href="{% url 'contact_list' %}" class="btn btn-block" style="flex: 1; background-color: #3D6657; border-color: #40886E; color: #fff; padding: 6px 12px; margin-top: 8px;">До списку</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

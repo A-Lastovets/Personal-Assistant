@@ -1,37 +1,46 @@
-{% extends "users/base.html" %}
+{% extends 'base.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Профіль{% endblock %}
 
 {% block content %}
-
-<div>
-    <h1>Profile page: {{user.username}}</h1>
-    <img src="{{ user.profile.avatar.url }}" alt="avatar of user"/>
-</div>
-
-{% if messages %}
-<div>
-    {% for message in messages %}
-    <div {% if message.tags %} class="alert-{{ message.tags }}" {% endif %}>{{ message }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-row">
-        <div class="col-md-5">
-            <div class="form-group">
-                <label class="small mb-1">Change Avatar:</label>
-                {{ profile_form.avatar }}
-                <span>{{ profile_form.errors.avatar }}</span>
+<div class="card" style="background-color: #3D6657; color: #E2B29B;">
+    <div class="card-header" style="background-color: #155840; color: #E2B29B;">
+        <h2 class="text-center">Ваш профіль</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group text-center">
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" class="rounded-circle" alt="Avatar" style="width: 150px; height: 150px;">
+                {% else %}
+                    <img src="{% static 'default_avatar.png' %}" class="rounded-circle" alt="Default Avatar" style="width: 150px; height: 150px;">
+                {% endif %}
             </div>
-        </div>
+
+            <div class="form-group">
+                {{ profile_form.avatar.label_tag }}
+                {{ profile_form.avatar|add_class:"form-control-file" }}
+                {{ profile_form.avatar.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="username">Логін:</label>
+                <input type="text" id="username" value="{{ user.username }}" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="{{ user.email }}" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="background-color: #6FBDA2; border: none;">Оновити профіль</button>
+            </div>
+        </form>
     </div>
-    <div class="grid">
-        <button type="submit">Save Changes</button>
-        <button type="reset" class="secondary">Reset</button>
-    </div>
-
-</form>
-
-{% endblock content %}
-
+</div>
+{% endblock %}

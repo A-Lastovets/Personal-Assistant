@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Додати контакт{% endblock %}
+
+{% block content %}
+    <div class="card contact-form-container mx-auto" style="max-width: 600px;">
+        <div class="card-body">
+            <h1 class="mb-4 text-center" style="color: #E2B29B;">Додати контакт</h1>
+
+            <form method="POST">
+                {% csrf_token %}
+            
+                {{ form.name.label }}
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.name.errors|striptags }}
+                    </div>
+                {% endif %}
+            
+                {{ form.address.label }}
+                {{ form.address }}
+                {% if form.address.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.address.errors|striptags }}
+                    </div>
+                {% endif %}
+            
+                {{ form.phone_number.label }}
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.phone_number.errors|striptags }}
+                    </div>
+                {% endif %}
+            
+                {{ form.email.label }}
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.email.errors|striptags }}
+                    </div>
+                {% endif %}
+            
+                {{ form.birthday.label }}
+                {{ form.birthday }}
+                {% if form.birthday.errors %}
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        {{ form.birthday.errors|striptags }}
+                    </div>
+                {% endif %}
+            
+                <button type="submit" class="btn btn-primary">Зберегти</button>
+            </form>
+                        
+        </div>
+    </div>
+{% endblock %}
