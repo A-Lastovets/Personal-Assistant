@@ -9,24 +9,34 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+
 import os
+import environ
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
 from pathlib import Path
+
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+env_file_path = BASE_DIR.parent / '.env'
+env.read_env(env_file_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k8ami=e_3#z2moo@*=3pzll8l37gb_i1f@**n$_m^gu*7%qz2='
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -59,7 +69,7 @@ ROOT_URLCONF = 'personal_assistant.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,17 +84,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'personal_assistant.wsgi.application'
 
+cloudinary.config(cloud_name=env("CLOUDINARY_CLOUD_NAME"), api_key=env(
+    "CLOUDINARY_API_KEY"), api_secret=env("CLOUDINARY_API_SECRET"), secure=True)
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': env('POSTGRES_DB_NAME'),
+    #     'USER': env('POSTGRES_DB_USER'),
+    #     'PASSWORD': env('POSTGRES_DB_PASSWORD'),
+    #     'HOST': env('POSTGRES_DB_HOST'),
+    #     'PORT': env('POSTGRES_DB_PORT'),
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('KOYEB_DB_NAME'),
+        'USER': env('KOYEB_DB_USER'),
+        'PASSWORD': env('KOYEB_DB_PASSWORD'),
+        'HOST': env('KOYEB_DB_HOST'),
+        'OPTIONS': {'sslmode': 'require'},
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -104,13 +127,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env("EMAIL_PORT")
+EMAIL_STARTTLS = False
+EMAIL_USE_SSL = True
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'uk'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
@@ -125,7 +157,16 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",  # Глобальна папка
 ]
 
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
+
+LOGIN_URL = 'users:login'

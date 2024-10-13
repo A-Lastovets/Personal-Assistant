@@ -1,0 +1,52 @@
+services:
+  postgres:
+    container_name: assistant_postgres  # Ім'я контейнера
+    image: postgres:16.1 # Образ PostgreSQL з версією 16.1
+    environment:
+      POSTGRES_USER: ${POSTGRES_DB_USER}  # Логін користувача
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}  # Пароль користувача
+      POSTGRES_DB: ${POSTGRES_DB_NAME}  # Назва бази даних
+      PGDATA: /var/lib/postgresql/data/pgdata  # Шлях для даних
+    ports:
+      - "5432:5432"  # Мапінг портів
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Volume для зберігання даних
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DB_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    container_name: assistant_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}  # Логін для pgAdmin
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}  # Пароль для pgAdmin
+    ports:
+      - "5050:80"  # Мапінг портів для pgAdmin (локальний порт -> контейнер)
+    depends_on:
+      - postgres  # pgAdmin залежить від сервісу PostgreSQL
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  web:
+    container_name: assistant_web
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy  # Чекати, поки postgres буде готовий
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+
+volumes:
+  pgdata:
+    driver: local  # Створення локального volume для зберігання даних PostgreSQL
+  pgadmin_data:
+    driver: local  # Volume для зберігання даних pgAdmin
+
+# Загалом, чому потрібні volumes: Зберігають дані між перезапусками контейнерів. 
+# У разі видалення або оновлення контейнерів ваші бази даних і налаштування залишаться. 
+# Оскільки дані зберігаються на хості, їх легше резервно копіювати.

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Новини{% endblock %}
+
+{% block content %}
+    <div class="header-container">
+        <h2>Останні новини</h2>
+        <div class="exchange-rate">
+            <h3>Популярні валютні курси</h3>
+            {% if usd_to_uah and eur_to_uah and pln_to_uah %}
+                <p>USD to UAH: {{ usd_to_uah }}</p>
+                <p>EUR to UAH: {{ eur_to_uah }}</p>
+                <p>PLN to UAH: {{ pln_to_uah }}</p>
+            {% else %}
+                <p>{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="news-container">
+        {% for category, articles in news_by_category.items %}
+            <div class="news-section">
+                <button class="toggle-news" onclick="toggleNews('{{ category|slugify }}')">
+                    {{ category|title }} News
+                </button>
+                <div class="news-list" id="{{ category|slugify }}">
+                    {% if articles %}
+                        <ul>
+                            {% for article in articles %}
+                                <li>
+                                    <h4><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h4>
+                                    <p>{{ article.description }}</p>
+                                    <p><strong>Автор:</strong>
+                                    {% if article.author and article.author != "None" %}
+                                        {{ article.author }}
+                                    {% else %}
+                                        Невідомий
+                                    {% endif %}
+                                    </p>
+                                    <p>{{ article.published_at }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="back-to-top">
+                            <button onclick="scrollToTop()" class="button">Повернутися на верх сторінки</button>
+                        </div>
+                    {% else %}
+                        <p>Не знайдено новин на цю категорію.</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exchange-rate {
+            text-align: right;
+        }
+
+        .news-list {
+            display: none;
+            margin-top: 10px;
+            background-color: #f9f9f9; /* Змінено фон на світліший */
+            border: 1px solid #ccc; /* Додано рамку */
+            border-radius: 8px; /* Закруглені краї */
+            padding: 10px; /* Внутрішні відступи */
+        }
+
+        .toggle-news {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff; /* Темніший колір кнопки */
+            color: white; /* Білий текст на кнопці */
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            margin: 5px 0;
+            border-radius: 5px; /* Закруглені краї кнопки */
+        }
+
+        .toggle-news:hover {
+            background-color: #0056b3; /* Темніший колір при наведенні */
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            background-color: #ffffff; /* Білий фон для кожного елемента списку */
+            border-radius: 5px; /* Закруглені краї для елементів списку */
+            padding: 10px; /* Внутрішні відступи для елементів списку */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тінь для елементів списку */
+        }
+
+        .back-to-top {
+            text-align: center; /* Центрування кнопки */
+            margin-top: 20px; /* Відстань від новин */
+        }
+
+        .button {
+            padding: 10px 20px; /* Внутрішні відступи кнопки */
+            background-color: #007bff; /* Колір кнопки */
+            color: white; /* Колір тексту */
+            border: none; /* Без рамки */
+            border-radius: 5px; /* Закруглені краї */
+            cursor: pointer; /* Курсор при наведенні */
+            transition: background-color 0.3s; /* Плавний перехід */
+        }
+
+        .button:hover {
+            background-color: #0056b3; /* Темніший колір при наведенні */
+        }
+    </style>
+
+    <script>
+        function toggleNews(category) {
+            const newsList = document.getElementById(category);
+            const backToTopButton = newsList.querySelector('.back-to-top');
+
+            if (newsList.style.display === "block") {
+                newsList.style.display = "none";
+                backToTopButton.style.display = "none"; // Сховати кнопку
+            } else {
+                newsList.style.display = "block";
+                backToTopButton.style.display = "block"; // Показати кнопку
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Плавна прокрутка
+            });
+        }
+    </script>
+{% endblock %}

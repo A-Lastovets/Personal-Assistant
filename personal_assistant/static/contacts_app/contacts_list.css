@@ -1,0 +1,46 @@
+.contact-name {
+    font-size: 1.2rem !important; /* Увеличиваем размер шрифта */
+    font-weight: bold !important; /* Делаем текст жирным */
+    color: #E2B29B; /* Цвет текста (можно изменить на более яркий) */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Тень для текста */
+}
+
+.btn-search {
+    background-color: #CA825F; /* Цвет кнопки */
+    border: none; /* Убираем рамку */
+    color: #FFFFFF !important; /* Цвет текста */
+    border-radius: 5px; /* Скругление углов */
+    padding: 10px 15px; /* Внутренние отступы */
+    margin-top: 0;
+    font-weight: bold;
+    position: relative;
+    font-size: 0.875rem;
+    transition: background-color 0.3s; /* Плавный переход для фона */
+}
+
+
+.btn-search:hover {
+    background-color: #E2A385; /* Цвет кнопки при наведении */
+    color: #E2B29B; /* Цвет текста при наведении */
+}
+
+.form-control-search {
+    background-color: #3D6657; /* Темный фон для поля ввода */
+    color: #e0e0e0; /* Мягкий цвет текста для поля */
+    border: 1px solid #666; /* Цвет рамки для поля */
+    border-radius: 5px; /* Скругление углов */
+    padding: 10px; /* Внутренние отступы */
+    margin-bottom: 10px; /* Отступ между полями */
+    transition: border-color 0.3s, background-color 0.3s; /* Плавный переход для рамки и фона */
+}
+
+.form-control-search:focus {
+    border-color: #d6a700; /* Цвет рамки при фокусе */
+    outline: none; /* Убираем стандартный outline */
+    background-color: #4A7B65; /* Темнее фон при фокусе */
+}
+
+.form-control-search::placeholder {
+    color: #a0a0a0; /* Установи желаемый цвет для плейсхолдера */
+    opacity: 1; /* Убираем прозрачность, чтобы цвет был ярче */
+}
