@@ -10,10 +10,13 @@ COPY . .
 # Встановлюємо залежності
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install --no-cache-dir python-multipart
+
+# Виконуємо команду збору статичних файлів
+RUN python personal_assistant/manage.py collectstatic
 
 # Виставляємо порт
 EXPOSE 8000
 
-# Команда для запуску Django сервера
-CMD ["python", "personal_assistant/manage.py", "runserver", "0.0.0.0:8000"]
+# Gunicorn для стабільного продакшн-середовища
+#Коли Gunicorn запускається, він створює кілька воркерів, щоб паралельно обробляти запити
+CMD ["gunicorn", "--workers", "9", "--bind", "0.0.0.0:8000", "personal_assistant.wsgi:application"]

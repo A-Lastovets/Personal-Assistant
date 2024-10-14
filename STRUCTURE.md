@@ -2,7 +2,6 @@
 |   .env
 |   .env.sample
 |   .gitignore
-|   docker-compose.yaml
 |   dockerfile
 |   LICENSE
 |   poetry.lock
