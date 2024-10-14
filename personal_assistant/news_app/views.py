@@ -6,8 +6,8 @@ import requests
 
 class ExchangeRateView(View):
     def get_exchange_rates(self):
-        # api_key_to_exchange_rate = 'c5733a77747980d8a23de9c56352963e'
-        api_key_to_exchange_rate = 'dOGY6QsWuSizKkdfpTEGz9ZzmzjlyVAo'
+        api_key_to_exchange_rate = 'c5733a77747980d8a23de9c56352963e'
+        # api_key_to_exchange_rate = 'dOGY6QsWuSizKkdfpTEGz9ZzmzjlyVAo'
         exchange_rate_url = (f'http://data.fixer.io/api/latest?access_key={api_key_to_exchange_rate}'
                              f'&symbols=USD,EUR,PLN,UAH')
 
@@ -39,8 +39,8 @@ class ExchangeRateView(View):
 
 class NewsView(View):
     def get_news(self):
-        # newsapi = NewsApiClient(api_key='435a219a6e2a412ebb8e1c5358571e6d')
-        newsapi = NewsApiClient(api_key='e8b2e3558bb743b19a4757c24b944d03')
+        newsapi = NewsApiClient(api_key='435a219a6e2a412ebb8e1c5358571e6d')
+        # newsapi = NewsApiClient(api_key='e8b2e3558bb743b19a4757c24b944d03')
         categories = ['business', 'entertainment', 'general',
                       'health', 'science', 'sports', 'technology']
         news_by_category = {}
