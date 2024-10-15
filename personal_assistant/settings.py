@@ -28,7 +28,7 @@ from django.contrib.messages import constants as messages
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
