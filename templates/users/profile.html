@@ -14,11 +14,7 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group text-center">
-                {% if user.profile.avatar %}
-                    <img src="{{ user.profile.avatar.url }}" class="rounded-circle" alt="Avatar" style="width: 150px; height: 150px;">
-                {% else %}
-                <img src="https://sudoteam.s3.eu-north-1.amazonaws.com/default_avatar.png" class="rounded-circle" alt="Default Avatar" style="width: 150px; height: 150px;">
-                {% endif %}
+                <img src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}https://sudoteam.s3.eu-north-1.amazonaws.com/default_avatar.png{% endif %}" class="rounded-circle" alt="Avatar" style="width: 150px; height: 150px;">
             </div>
 
             <div class="form-group">
