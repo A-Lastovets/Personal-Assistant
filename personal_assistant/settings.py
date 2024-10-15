@@ -47,7 +47,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", '0.0.0.0',
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY')
 
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost',
