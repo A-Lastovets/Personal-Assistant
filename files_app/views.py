@@ -2,24 +2,17 @@ import cloudinary.exceptions
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views.generic import ListView
-from django.http import HttpResponse
-
 import cloudinary
 import cloudinary.uploader
-
 import imageio
 from io import BytesIO
-
 import mimetypes
-
 import requests
 import os
-
 from .models import File
 from .forms import FileUploadForm
-
 import cloudinary.api
 
 
@@ -30,7 +23,6 @@ class FileListView(ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        # Обмежуємо вибірку файлами поточного користувача
         queryset = super().get_queryset().filter(
             user=self.request.user).order_by('-uploaded_at')
         category = self.request.GET.get('category')
@@ -53,14 +45,16 @@ class FileListView(ListView):
 
         context['files'] = page_obj
         context['is_paginated'] = paginator.num_pages > 1
-        return context
+        context['selected_category'] = self.request.GET.get(
+            'category', 'all')
 
 
 def upload_file(request):
     if request.method == 'POST':
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            file_instance = form.save(commit=False, user=request.user)
+            file_instance = form.save(commit=False)
+            file_instance.user = request.user
 
             if file_instance.category == 'image':
                 resource_type = 'image'
@@ -106,9 +100,7 @@ def upload_file(request):
 
 
 def download_file(request, file_id):
-
     file_instance = get_object_or_404(File, id=file_id)
-
     file_url = str(file_instance.file)
 
     if not file_url.endswith(file_instance.original_extension):
@@ -128,11 +120,11 @@ def download_file(request, file_id):
             content_type = 'application/octet-stream'
 
         file_name, file_extension = os.path.splitext(file_instance.name)
-
         file_extension = file_instance.original_extension or file_extension
 
         download_response = HttpResponse(response.content)
-        download_response['Content-Disposition'] = f'attachment; filename="{file_name}{file_extension}"'
+        download_response[
+            'Content-Disposition'] = f'attachment; filename="{file_name}{file_extension}"'
         download_response['Content-Type'] = content_type
 
         return download_response
@@ -146,7 +138,6 @@ def download_file(request, file_id):
 
 
 def delete_file(request, file_id):
-
     file_instance = get_object_or_404(File, id=file_id)
     public_id = file_instance.public_id
     resource_type = file_instance.resource_type
@@ -157,7 +148,6 @@ def delete_file(request, file_id):
         print(f"Ответ от Cloudinary: {response}")
 
         if response.get('result') == 'ok' or response.get('result') == 'deleted':
-
             file_instance.delete()
             return redirect('file_list')
         else:

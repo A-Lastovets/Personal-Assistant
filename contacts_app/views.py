@@ -21,6 +21,7 @@ def contacts_home(request):
     """
     return render(request, 'contacts_app/contact_home.html')
 
+
 @login_required
 def add_contact(request):
     """
@@ -47,6 +48,7 @@ def add_contact(request):
 
     return render(request, 'contacts_app/add_contact.html', {'form': form})
 
+
 @login_required
 def contact_detail(request, contact_id):
     """
@@ -62,6 +64,7 @@ def contact_detail(request, contact_id):
     contact = get_object_or_404(
         Contact, id=contact_id, user=request.user)
     return render(request, 'contacts_app/contact_detail.html', {'contact': contact})
+
 
 @login_required
 def edit_contact(request, contact_id):
@@ -93,6 +96,7 @@ def edit_contact(request, contact_id):
         'contact': contact
     })
 
+
 @login_required
 def delete_contact(request, contact_id):
     """
@@ -111,6 +115,7 @@ def delete_contact(request, contact_id):
         Contact, id=contact_id, user=request.user)
     contact.delete()
     return redirect('contact_list')
+
 
 @login_required
 def contact_list(request):
@@ -135,6 +140,7 @@ def contact_list(request):
 
     return render(request, 'contacts_app/contact_list.html', {'contacts': contacts_page})
 
+
 @login_required
 def contact_search(request):
     """
@@ -146,14 +152,15 @@ def contact_search(request):
     Returns:
         HttpResponse: Сторінка з результатами пошуку контактів або порожнє поле, якщо запиту ще не введено.
     """
-    query = request.GET.get('query', '')  # Встановлюємо значення за замовчуванням
-
+    query = request.GET.get(
+        'query', '')
     if query:
         contacts = Contact.objects.filter(name__icontains=query)
     else:
         contacts = []
 
     return render(request, 'contacts_app/contact_search.html', {'contacts': contacts, 'query': query})
+
 
 @login_required
 def upcoming_birthdays(request):
@@ -174,7 +181,7 @@ def upcoming_birthdays(request):
     except ValueError:
         period = 1
 
-    end_date = today + relativedelta(months=period)  # Обчислюємо кінцеву дату на основі обраного періоду
+    end_date = today + relativedelta(months=period)
 
     all_birthdays = Contact.objects.filter(
         user=request.user)
@@ -191,11 +198,11 @@ def upcoming_birthdays(request):
             contact_birthday_next_year = contact_birthday_current_year
 
         if today <= contact_birthday_current_year <= end_date or today <= contact_birthday_next_year <= end_date:
-            # Додаємо до результатів найближчу дату народження для сортування
+
             nearest_birthday = contact_birthday_current_year if contact_birthday_current_year >= today else contact_birthday_next_year
             results.append((contact, nearest_birthday))
 
-    results.sort(key=lambda x: x[1])     # Сортуємо контакти за найближчою датою дня народження
+    results.sort(key=lambda x: x[1])
 
     sorted_contacts = [contact for contact, birthday in results]
 

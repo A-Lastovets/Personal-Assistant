@@ -6,10 +6,12 @@ from django.db.models import Q
 from .models import Note, Tag
 from .forms import NoteForm
 
+
 @login_required
 def note_home(request):
     notes = Note.objects.filter(created_by=request.user)
     return render(request, 'notes_app/note_home.html', {'notes': notes})
+
 
 @login_required
 def add_note(request):
@@ -39,13 +41,13 @@ def add_note(request):
                 if created:
                     note.tags.add(tag)
 
-            messages.success(request, 'Нотатка успішно додана!')
             return redirect('note_list')
     else:
         form = NoteForm()
 
     user_tags = Tag.objects.filter(created_by=request.user)
     return render(request, 'notes_app/add_note.html', {'form': form, 'tags': user_tags})
+
 
 @login_required
 def note_list(request):
@@ -67,11 +69,13 @@ def note_list(request):
 
     return render(request, 'notes_app/note_list.html', {'page_obj': page_obj, 'query': query, 'tag_query': tag_query})
 
+
 @login_required
 def edit_note(request, note_id):
     note = get_object_or_404(Note, id=note_id, created_by=request.user)
     if request.method == "POST":
-        form = NoteForm(request.POST, instance=note)
+        form = NoteForm(request.POST, instance=note,
+                        user=request.user)
         if form.is_valid():
             note = form.save(commit=False)
             note.created_by = request.user
@@ -96,21 +100,19 @@ def edit_note(request, note_id):
                 )
                 if created:
                     note.tags.add(tag)
-
-            messages.success(request, 'Нотатка успішно оновлена!')
             return redirect('note_list')
     else:
-        form = NoteForm(instance=note)
+        form = NoteForm(instance=note, user=request.user)
 
-    user_tags = Tag.objects.filter(created_by=request.user)
-    return render(request, 'notes_app/edit_note.html', {'form': form, 'note': note, 'tags': user_tags})
+    return render(request, 'notes_app/edit_note.html', {'form': form, 'note': note})
+
 
 @login_required
 def delete_note(request, note_id):
     note = get_object_or_404(Note, id=note_id, created_by=request.user)
     note.delete()
-    messages.success(request, 'Нотатка успішно видалена!')
     return redirect('note_list')
+
 
 @login_required
 def note_list_sorted(request):
@@ -122,10 +124,12 @@ def note_list_sorted(request):
         notes = Note.objects.filter(created_by=request.user)
     return render(request, 'notes_app/note_list.html', {'notes': notes})
 
+
 @login_required
 def note_detail(request, note_id):
     note = get_object_or_404(Note, id=note_id, created_by=request.user)
     return render(request, 'notes_app/note_detail.html', {'note': note})
+
 
 @login_required
 def add_tag(request):

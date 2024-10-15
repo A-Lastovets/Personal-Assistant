@@ -73,8 +73,7 @@ docs/_build/
 # PyBuilder
 .pybuilder/
 target/
-venv_assistant/
-venv_Assistant/
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
@@ -121,14 +120,7 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+
 
 # Spyder project settings
 .spyderproject
@@ -161,4 +153,15 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+venv_assistant/
+venv_assistant/*
 venv_Assistant/
+venv_Assistant/*

@@ -21,22 +21,33 @@ from pathlib import Path
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env()
-env_file_path = BASE_DIR.parent / '.env'
-env.read_env(env_file_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", '0.0.0.0', 'impossible-alexis-anton-team-550531ea.koyeb.app']
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+
+if DEBUG:
+    env_file_path = BASE_DIR / '.env'
+else:
+    env_file_path = BASE_DIR.parent / '.env'
+
+env.read_env(env_file_path)
+
+
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", '0.0.0.0',
+                 'impossible-alexis-anton-team-550531ea.koyeb.app']
+
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-k8ami=e_3#z2moo@*=3pzll8l37gb_i1f@**n$_m^gu*7%qz2='
 
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost',
@@ -91,8 +102,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'personal_assistant.wsgi.application'
 
-cloudinary.config(cloud_name=env("CLOUDINARY_CLOUD_NAME"), api_key=env(
-    "CLOUDINARY_API_KEY"), api_secret=env("CLOUDINARY_API_SECRET"), secure=True)
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -107,6 +116,7 @@ DATABASES = {
         'OPTIONS': {'sslmode': 'require'},
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -136,6 +146,10 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# Cloudinary settings
+cloudinary.config(cloud_name=env("CLOUDINARY_CLOUD_NAME"), api_key=env(
+    "CLOUDINARY_API_KEY"), api_secret=env("CLOUDINARY_API_SECRET"), secure=True)
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
@@ -156,7 +170,10 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MEDIA_ROOT = BASE_DIR / 'media'
+if DEBUG:
+    MEDIA_ROOT = BASE_DIR / 'media'
+else:
+    MEDIA_ROOT = BASE_DIR.parent / 'media'
 MEDIA_URL = '/media/'
 
 # Default primary key field type

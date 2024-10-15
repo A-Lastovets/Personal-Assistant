@@ -3,15 +3,18 @@
 {% block title %}Ваш помічник{% endblock %}
 
 {% block content %}
-<div class="container" style="padding-top: 20px;"> <!-- Контейнер для всего содержимого -->
+<div class="container" style="padding-top: 20px;">
     <div class="row">
         <div class="col-12 text-end" style="position: relative;">
-            <!-- Курсы валют в правом верхнем углу -->
             <div class="position-absolute" style="right: 0; top: 0; z-index: 1000; color: #E2B29B;">
                 <strong>Курси валют:</strong> 
-                <span>1 USD = {{ usd_to_uah }} UAH</span> | 
-                <span>1 EUR = {{ eur_to_uah }} UAH</span> | 
-                <span>1 PLN = {{ pln_to_uah }} UAH</span>
+                {% if error %}
+                    <span class="text-danger">{{ error }}</span>
+                {% else %}
+                    <span>1 USD = {{ usd_to_uah }} UAH</span> | 
+                    <span>1 EUR = {{ eur_to_uah }} UAH</span> | 
+                    <span>1 PLN = {{ pln_to_uah }} UAH</span>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -38,35 +41,30 @@
         <p>Відсутні доступні новини.</p>
     {% endfor %}
 
-<style>
-    #scrollToTopBtn {
-        background-color: #E2B29B;
-        color: white;
-        border: 2px solid transparent;
-        transition: background-color 0.3s, border-color 0.3s;
-    }
-    
-    #scrollToTopBtn:hover {
-        background-color: transparent;
-        border-color: #E2B29B;
-        color: #E2B29B;
-    }
-    
-</style>
+    <style>
+        #scrollToTopBtn {
+            background-color: #E2B29B;
+            color: white;
+            border: 2px solid transparent;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: transparent;
+            border-color: #E2B29B;
+            color: #E2B29B;
+        }
+    </style>
 
     <a id="scrollToTopBtn" class="btn btn-outline-secondary" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">Вгору</a>
-
-
 </div>
-
 
 <script>
     document.querySelectorAll('.category-toggle').forEach(function(toggle) {
         toggle.addEventListener('click', function(event) {
-            event.preventDefault(); // предотвращает переход по ссылке
+            event.preventDefault();
             const targetId = toggle.getAttribute('data-target');
             const targetElement = document.querySelector(targetId);
-            // Переключаем отображение с плавным переходом
             if (targetElement.style.display === 'none' || targetElement.style.display === '') {
                 targetElement.style.display = 'block';
                 setTimeout(() => {
@@ -80,19 +78,17 @@
     });
 
     window.addEventListener('scroll', function() {
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-    // Если прокрутка больше 100 пикселей от верха, показываем кнопку
-    if (window.scrollY > 100) {
-        scrollToTopBtn.style.display = 'block';
-    } else {
-        scrollToTopBtn.style.display = 'none';
-    }
-});
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        if (window.scrollY > 100) {
+            scrollToTopBtn.style.display = 'block';
+        } else {
+            scrollToTopBtn.style.display = 'none';
+        }
+    });
 
-// Добавляем действие для кнопки
     document.getElementById('scrollToTopBtn').addEventListener('click', function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
+    });
 </script>
+
 {% endblock %}

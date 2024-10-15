@@ -16,7 +16,6 @@
             </form>
         </div>
 
-        <!-- Кнопка для добавления новой заметки -->
         <div class="text-center mb-4">
             <a href="{% url 'add_note' %}" class="btn btn-success" style="background-color: #E2B29B; color: white; width: 100%;">Додати нотатку</a>
         </div>
@@ -41,7 +40,6 @@
 
         
 
-        <!-- Пагинация -->
         {% if page_obj.paginator.num_pages > 1 %}
             <div class="pagination mt-4">
                 <span class="step-links">

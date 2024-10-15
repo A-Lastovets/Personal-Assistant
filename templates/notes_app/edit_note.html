@@ -1,23 +1,22 @@
 {% extends 'base.html' %}
 
-{% block title %}Редактировать заметку{% endblock %}
+{% block title %}Редагувати нотатку{% endblock %}
 
 {% load notes_custom_filters %}
-
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/note_edit.css' %}">
 
 {% block content %}
 <div class="card contact-form-container mt-4 shadow">
     <div class="card-header" style="background-color: #155840; color: #E2B29B;">
-        <h1 class="m-2">Редактировать заметку</h1>
+        <h1 class="m-2">Редагувати нотатку</h1>
     </div>
 
     <div class="card-body">
         {% if not note %}
-            <p class="text-center">Нет заметок для редактирования.</p>
+            <p class="text-center">Відсутні нотатки для редагування</p>
             <div class="text-center mt-3">
-                <a href="{% url 'note_list' %}" class="btn btn-secondary" style="background-color: #E2B29B; color: white;">Назад к списку заметок</a>
+                <a href="{% url 'note_list' %}" class="btn btn-secondary" style="background-color: #E2B29B; color: white;">Назад до списку</a>
             </div>
         {% else %}
             <form method="POST" class="p-4 rounded">
@@ -34,12 +33,15 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_tags">Теги:</label>
+                    <label for="id_tags" class="d-flex align-items-center">
+                        Теги:
+                        <div id="selected-tags" class="d-flex flex-wrap ms-2"></div> 
+                    </label>
                     <div class="d-flex flex-wrap mt-2" id="tag-container">
                         {% for tag in form.tags.field.queryset %}
                             <div class="me-2 mb-2">
                                 <input type="checkbox" class="d-none" id="tag{{ tag.id }}" name="tags" value="{{ tag.id }}" onchange="updateTagStyle(this)" {% if tag in note.tags.all %}checked{% endif %}>
-                                <label class="btn btn-outline-secondary tag-label" for="tag{{ tag.id }}" style="background-color: {% if tag in note.tags.all %} #3D6657 {% else %} #6FBDA2{% endif %}; color: {% if tag in note.tags.all %}#E2B29B{% else %}#3D6657{% endif %}; padding: 5px 15px; border-radius: 5px; transition: background-color 0.2s;">
+                                <label class="btn btn-outline-secondary tag-label" for="tag{{ tag.id }}" style="background-color: {% if tag in note.tags.all %} #6FBDA2 {% else %} #3D6657{% endif %}; color: {% if tag in note.tags.all %}#E2B29B{% else %}#3D6657{% endif %}; padding: 5px 10px; border-radius: 5px; transition: background-color 0.2s;">
                                     {{ tag.name }}
                                 </label>
                             </div>
@@ -48,14 +50,14 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="new_tag">Добавить новый тег:</label>
+                    <label for="new_tag">Створити новий тег:</label>
                     <input type="text" id="new_tag" name="new_tag" class="form-control" placeholder="Введите название тега">
                 </div>
 
-                <button type="button" class="btn btn-primary mt-2" id="add_tag_button">Добавить тег</button>
-
-                <button type="submit" class="btn btn-success mt-3">Сохранить изменения</button>
-                <a href="{% url 'note_list' %}" class="btn btn-info mt-3">Назад к списку заметок</a>
+                <button type="button" class="btn btn-primary mt-2" id="add_tag_button">Створити тег</button>
+                <br>
+                <button type="submit" class="btn btn-success mt-3">Зберегти зміни</button>
+                <a href="{% url 'note_list' %}" class="btn btn-info mt-3">Назад до списку</a>
             </form>
         {% endif %}
     </div>
@@ -64,31 +66,48 @@
 <script>
     function updateTagStyle(checkbox) {
         const label = document.querySelector(`label[for="${checkbox.id}"]`);
+        const selectedTagsContainer = document.getElementById('selected-tags');
+
         if (checkbox.checked) {
-            label.style.backgroundColor = '#3D6657'; // Цвет при выборе
-            label.style.color = '#E2B29B'; // Цвет текста при выборе
+            label.style.backgroundColor = '#3D6657';
+            label.style.color = '#E2B29B';
+
+            const badge = document.createElement('span');
+            badge.className = 'badge me-2 ml-1'; 
+            badge.textContent = label.textContent;
+            badge.style.backgroundColor = '#3D6657';
+
+            badge.onclick = function() {
+                checkbox.checked = false;
+                updateTagStyle(checkbox);
+                badge.remove();
+            };
+
+            selectedTagsContainer.appendChild(badge);
         } else {
-            label.style.backgroundColor = '#6FBDA2'; // Цвет по умолчанию
-            label.style.color = '#3D6657'; // Цвет текста по умолчанию
+            label.style.backgroundColor = '#6FBDA2';
+            label.style.color = '#3D6657';
+
+            const badgeToRemove = Array.from(selectedTagsContainer.children).find(badge => badge.textContent === label.textContent);
+            if (badgeToRemove) {
+                badgeToRemove.remove();
+            }
         }
     }
 
-    // Обновляем стили тегов при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
         const checkboxes = document.querySelectorAll('input[name="tags"]');
         checkboxes.forEach(checkbox => {
-            updateTagStyle(checkbox); // Применяем стиль для каждого чекбокса
+            updateTagStyle(checkbox);
         });
 
-        // Обработка добавления нового тега
         document.getElementById('add_tag_button').addEventListener('click', function() {
             const newTagInput = document.getElementById('new_tag');
             const newTagName = newTagInput.value.trim();
             if (newTagName) {
-                const newTagId = Date.now(); // Используем текущее время в качестве уникального ID
+                const newTagId = Date.now();
                 const tagContainer = document.getElementById('tag-container');
                 
-                // Создаем новый чекбокс для нового тега
                 const tagDiv = document.createElement('div');
                 tagDiv.classList.add('me-2', 'mb-2');
 
@@ -97,14 +116,14 @@
                 checkbox.className = 'd-none';
                 checkbox.id = `tag${newTagId}`;
                 checkbox.name = 'tags';
-                checkbox.value = newTagName; // Можно сохранить как ID или имя
+                checkbox.value = newTagName;
 
                 const label = document.createElement('label');
                 label.className = 'btn btn-outline-secondary tag-label';
                 label.htmlFor = `tag${newTagId}`;
                 label.style.backgroundColor = '#6FBDA2';
                 label.style.color = '#3D6657';
-                label.style.padding = '5px 15px';
+                label.style.padding = '5px 10px';
                 label.style.borderRadius = '5px';
                 label.style.transition = 'background-color 0.2s';
                 label.innerText = newTagName;
@@ -117,8 +136,20 @@
                 tagDiv.appendChild(checkbox);
                 tagDiv.appendChild(label);
                 tagContainer.appendChild(tagDiv);
-                
-                newTagInput.value = ''; // Очищаем поле ввода
+
+                const badge = document.createElement('span');
+                badge.className = 'badge me-2'; 
+                badge.textContent = newTagName;
+
+                badge.onclick = function() {
+                    checkbox.checked = false;
+                    updateTagStyle(checkbox);
+                    badge.remove();
+                };
+
+                document.getElementById('selected-tags').appendChild(badge);
+
+                newTagInput.value = '';
             }
         });
     });

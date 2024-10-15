@@ -58,7 +58,6 @@ def profile(request):
             request.POST, request.FILES, instance=request.user.profile)
         if profile_form.is_valid():
             profile_form.save()
-            messages.success(request, 'Профіль оновлено успішно!')
             return redirect(to='users:profile')
 
     profile_form = ProfileForm(instance=request.user.profile)

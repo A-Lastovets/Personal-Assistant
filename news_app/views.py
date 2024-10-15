@@ -11,6 +11,7 @@ env = environ.Env()
 env_file_path = BASE_DIR.parent / '.env'
 env.read_env(env_file_path)
 
+
 class ExchangeRateView(View):
     def get_exchange_rates(self):
         api_key_to_exchange_rate = env('api_key_to_exchange_rate')
@@ -22,7 +23,6 @@ class ExchangeRateView(View):
             response.raise_for_status()
             currency_data = response.json()
 
-            # Перевірка наявності ключа 'rates' у відповіді
             if 'rates' in currency_data:
                 usd_to_uah = round(
                     currency_data['rates']['UAH'] / currency_data['rates']['USD'], 2)
@@ -37,10 +37,10 @@ class ExchangeRateView(View):
                     'pln_to_uah': pln_to_uah,
                 }
             else:
-                return {'error': 'Не вдалось отримати курси валют. Спробуйте пізніше.'}
+                return {'error': 'Не вдалося отримати курси валют. Спробуйте пізніше.'}
 
         except (requests.exceptions.HTTPError, requests.exceptions.RequestException):
-            return {'error': 'Не вдалось отримати дані про курси валют. Спробуйте пізніше.'}
+            return {'error': 'Не вдалося отримати дані про курси валют. Спробуйте пізніше.'}
 
 
 class NewsView(View):
@@ -51,7 +51,10 @@ class NewsView(View):
         news_by_category = {}
 
         for category in categories:
-            news_data = newsapi.get_top_headlines(category=category)
+            try:
+                news_data = newsapi.get_top_headlines(category=category)
+            except Exception as e:
+                return {'error': 'Не вдалося отримати новини. Спробуйте пізніше.'}
 
             articles = []
             for article in news_data.get('articles', []):
@@ -78,6 +81,7 @@ class NewsView(View):
             news_by_category[category] = articles
 
         return news_by_category
+
 
 class ExchangeRateNewsView(View):
     template_name = 'news.html'

@@ -3,6 +3,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+
 class Contact(models.Model):
     """
     Модель для зберігання інформації про контакт у книзі контактів.
@@ -33,7 +34,7 @@ class Contact(models.Model):
             int: Кількість днів до наступного дня народження, або None, якщо день народження не вказано.
         """
         if not self.birthday:
-            return None  # Якщо день народження не вказано, повертаємо None
+            return None
 
         today = timezone.now().date()
         next_birthday = self.birthday.replace(year=today.year)

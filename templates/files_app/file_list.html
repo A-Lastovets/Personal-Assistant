@@ -4,42 +4,38 @@
 {% block title %}Список завантажених файлів{% endblock %}
 
 <link rel="stylesheet" href="{% static 'css/files_list.css' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> <!-- Підключення Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 <style>
     .btn-close-custom {
         background: none;
         border: none;
         font-size: 1.5rem;
-        color: #E2B29B; /* Колір хрестика */
+        color: #E2B29B;
         cursor: pointer;
         transition: color 0.3s ease;
     }
 
     .btn-close-custom:hover {
-        color: #CA825F; /* Колір при наведенні */
-    }
-
-    .btn-close-custom:focus {
-        outline: none;
+        color: #CA825F;
     }
 
     .btn-download {
-        background-color: #6FBDA2; /* Основний колір для кнопки "Завантажити" */
+        background-color: #6FBDA2;
         color: white;
     }
 
     .btn-download:hover {
-        background-color: #40886E; /* Колір при наведенні для кнопки "Завантажити" */
+        background-color: #40886E;
     }
 
     .btn-delete {
-        background-color: #CA825F; /* Основний колір для кнопки "Видалити" */
+        background-color: #CA825F;
         color: white;
     }
 
     .btn-delete:hover {
-        background-color: #986F5B; /* Колір при наведенні для кнопки "Видалити" */
+        background-color: #986F5B;
     }
 
     .pagination {
@@ -53,22 +49,22 @@
     }
 
     .page-link {
-        background-color: #3D6657; /* Цвет фона кнопки */
-        color: #E2B29B; /* Цвет текста */
-        border-radius: 5px; /* Закругленные углы */
+        background-color: #3D6657;
+        color: #E2B29B;
+        border-radius: 5px;
         padding: 0.5rem 1rem;
-        transition: background-color 0.3s ease, color 0.3s ease; /* Плавный переход */
+        transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .page-link:hover {
-        background-color: #6FBDA2; /* Цвет фона при наведении */
-        color: white; /* Цвет текста при наведении */
+        background-color: #6FBDA2;
+        color: white;
     }
 
     .page-item.active .page-link {
-        background-color: #40886E; /* Цвет для активной страницы */
-        color: white; /* Цвет текста для активной страницы */
-        pointer-events: none; /* Запретить клики на активной странице */
+        background-color: #40886E;
+        color: white;
+        pointer-events: none; 
     }
 </style>
 
@@ -79,7 +75,20 @@
         <div class="d-flex justify-content-center">
             <div class="card" style="width: 50vw; background-color: #40886E; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);">
                 <div class="card-body text-center">
-                    <a href="{% url 'upload_file' %}" class="btn btn-success mb-3" style=" color: #E2B29B;background-color: #3D6657; border: none">Завантажити новий файл</a>
+                    <form method="GET" action="{% url 'file_list' %}" id="filterForm">
+                        <div class="form-group">
+                            <label for="category" style="color: #E2B29B;">Виберіть категорію:</label>
+                            <select name="category" id="category" class="form-control mb-3" style="width: 80%; margin: auto; padding: 0 5px 0 5px;" onchange="document.getElementById('filterForm').submit();">
+                                <option value="">Всі категорії</option>
+                                <option value="image" {% if selected_category == 'image' %}selected{% endif %}>Зображення</option>
+                                <option value="video" {% if selected_category == 'video' %}selected{% endif %}>Відео</option>
+                                <option value="audio" {% if selected_category == 'audio' %}selected{% endif %}>Аудіо</option>
+                                <option value="document" {% if selected_category == 'document' %}selected{% endif %}>Документи</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success" style="background-color: #3D6657; border: none; display: none;">Фільтрувати</button>
+                    </form>
+                    <a href="{% url 'upload_file' %}" class="btn btn-success mb-3 mt-3" style="color: #E2B29B;background-color: #3D6657; border: none">Завантажити новий файл</a>
                 </div>
                 <ul class="list-group list-group-flush">
                     {% for file in files %}
@@ -111,16 +120,15 @@
                     {% endfor %}
                 </ul>
 
-                <!-- Пагинация -->
                 {% if is_paginated %}
                 <nav aria-label="Page navigation" class="mt-4">
                     <ul class="pagination">
                         {% if files.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page=1" aria-label="First">««</a>
+                                <a class="page-link" href="?page=1&category={{ selected_category }}" aria-label="First">Перша</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ files.previous_page_number }}" aria-label="Previous">«</a>
+                                <a class="page-link" href="?page={{ files.previous_page_number }}&category={{ selected_category }}" aria-label="Previous">Попередня</a>
                             </li>
                         {% endif %}
 
@@ -129,17 +137,17 @@
                                 {% if files.number == page_num %}
                                     <span>{{ page_num }}</span>
                                 {% else %}
-                                    <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                                    <a class="page-link" href="?page={{ page_num }}&category={{ selected_category }}">{{ page_num }}</a>
                                 {% endif %}
                             </li>
                         {% endfor %}
 
                         {% if files.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ files.next_page_number }}" aria-label="Next">»</a>
+                                <a class="page-link" href="?page={{ files.next_page_number }}&category={{ selected_category }}" aria-label="Next">Наступна</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ files.paginator.num_pages }}" aria-label="Last">»»</a>
+                                <a class="page-link" href="?page={{ files.paginator.num_pages }}&category={{ selected_category }}" aria-label="Last">Остання</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -150,21 +158,16 @@
         </div>
     </div>
 
-    <!-- Модальне вікно для зображень і відео -->
-    <div class="modal" id="imageModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content card">
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Перегляд файлу</h5>
-                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close" onclick="closeFile()">
-                        <i class="bi bi-x-lg"></i> <!-- Іконка хрестика -->
-                    </button>
+                    <button type="button" class="btn-close btn-close-custom" aria-label="Close" onclick="closeFile()"></button>
                 </div>
-                <div class="modal-body" style="padding: 0; text-align: center;">
-                    <!-- Для зображень -->
-                    <img id="modalImage" class="img-fluid" alt="Image preview" style="display: none;">
-                    <!-- Для відео -->
-                    <video id="modalVideo" controls style="width: 100%; height: auto; max-height: 80vh; display: none;"></video>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Modal Image" class="img-fluid" style="display:none;">
+                    <iframe id="modalVideo" src="" frameborder="0" allowfullscreen style="display:none; width:100%; height:400px;"></iframe>
                 </div>
             </div>
         </div>
@@ -174,8 +177,8 @@
         function openImage(url) {
             const modalImage = document.getElementById('modalImage');
             const modalVideo = document.getElementById('modalVideo');
-            modalVideo.style.display = 'none';  // Сховати відео, якщо воно було відображено
-            modalImage.style.display = 'block';  // Відобразити зображення
+            modalImage.style.display = 'block';
+            modalVideo.style.display = 'none'; 
             modalImage.src = url;
             $('#imageModal').modal('show');
         }
@@ -183,8 +186,8 @@
         function openVideo(url) {
             const modalImage = document.getElementById('modalImage');
             const modalVideo = document.getElementById('modalVideo');
-            modalImage.style.display = 'none';  // Сховати зображення, якщо воно було відображено
-            modalVideo.style.display = 'block';  // Відобразити відео
+            modalImage.style.display = 'none';
+            modalVideo.style.display = 'block';  
             modalVideo.src = url;
             $('#imageModal').modal('show');
         }
@@ -194,6 +197,12 @@
             const modalVideo = document.getElementById('modalVideo');
             modalImage.style.display = 'none';
             modalVideo.style.display = 'none';
+            modalImage.src = '';
+            modalVideo.src = '';
+            $('#imageModal').modal('hide');
         }
     </script>
 {% endblock %}
+
+
+

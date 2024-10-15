@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Добавить заметку{% endblock %}
+{% block title %}Створити нотатку{% endblock %}
 
 {% load notes_custom_filters %}
 {% block content %}
 <div class="card contact-form-container mt-4 shadow">
     <div class="card-header" style="background-color: #155840; color: #E2B29B;">
-        <h1 class="m-2">Добавить заметку</h1>
+        <h1 class="m-2">Створити нотатку</h1>
     </div>
 
     <div class="card-body">
@@ -33,27 +33,30 @@
             </div>
         
             <div class="form-group">
-                <label for="id_tags">Теги:</label>
-                <div class="d-flex flex-wrap mt-2" id="tag-container">
-                    {% for tag in tags %}  <!-- Используем переданный список тегов -->
+                <label for="id_tags" class="d-flex align-items-center">
+                    Теги:
+                    <div id="selected-tags" class="d-flex flex-wrap ms-2"></div> 
+                </label>
+                <div class="d-flex flex-wrap" id="tag-container">
+                    {% for tag in tags %}
                         <div class="me-2 mb-2">
                             <input type="checkbox" class="d-none" id="tag{{ tag.id }}" name="tags" value="{{ tag.id }}" onchange="updateTagStyle(this)">
-                            <label class="btn btn-outline-secondary tag-label" for="tag{{ tag.id }}" style="background-color: #6FBDA2; color: #3D6657; padding: 5px 15px; border-radius: 5px; transition: background-color 0.2s;">
+                            <label class="btn btn-outline-secondary tag-label" for="tag{{ tag.id }}" style="background-color: #6FBDA2; color: #3D6657; padding: 5px 10px; border-radius: 5px; transition: background-color 0.2s;">
                                 {{ tag.name }}
                             </label>
                         </div>
                     {% endfor %}
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="newTagName">Новый тег:</label>
-                    <input type="text" id="newTagName" class="form-control mt-2" placeholder="Введите имя нового тега">
-                    <button type="button" class="btn btn-primary mt-2" id="createTagButton">Создать тег</button>
-                </div>
+            <div class="form-group">
+                <label for="newTagName">Новий тег:</label>
+                <input type="text" id="newTagName" class="form-control mt-2" placeholder="Введіть ім'я нового тегу">
+                <button type="button" class="btn btn-primary mt-2" id="createTagButton">Створити тег</button>
             </div>
         
-            <button type="submit" class="btn btn-success mt-3">Добавить заметку</button>
-            <a href="{% url 'note_list' %}" class="btn btn-info mt-3">Назад к списку заметок</a>
+            <button type="submit" class="btn btn-success mt-3">Додати нотатку</button>
+            <a href="{% url 'note_list' %}" class="btn btn-info mt-3">Назад до списку</a>
         </form>
 
         <form method="POST" action="{% url 'add_tag' %}" id="addTagForm" style="display:none;">
@@ -66,23 +69,37 @@
 <script>
     function updateTagStyle(checkbox) {
         const label = document.querySelector(`label[for="${checkbox.id}"]`);
+        const selectedTagsContainer = document.getElementById('selected-tags');
+
         if (checkbox.checked) {
-            label.style.backgroundColor = '#3D6657'; // Цвет при выборе
-            label.style.color = '#E2B29B'; // Цвет текста при выборе
+            label.style.backgroundColor = '#3D6657';
+            label.style.color = '#E2B29B';
+
+            const badge = document.createElement('span');
+            badge.className = 'badge me-2 ml-1';
+            badge.textContent = label.textContent;
+            badge.style.backgroundColor = '#3D6657';
+
+            selectedTagsContainer.appendChild(badge);
         } else {
-            label.style.backgroundColor = '#6FBDA2'; // Цвет по умолчанию
-            label.style.color = '#3D6657'; // Цвет текста по умолчанию
+            label.style.backgroundColor = '#6FBDA2';
+            label.style.color = '#3D6657';
+
+            const badgeToRemove = Array.from(selectedTagsContainer.children).find(badge => badge.textContent === label.textContent);
+            if (badgeToRemove) {
+                badgeToRemove.remove();
+            }
         }
     }
 
     document.getElementById('createTagButton').addEventListener('click', function(event) {
-        event.preventDefault(); // Предотвращаем отправку формы
+        event.preventDefault();
         const newTagName = document.getElementById('newTagName').value.trim();
         if (newTagName) {
             const addTagForm = document.getElementById('addTagForm');
-            if (addTagForm) { // Проверяем, существует ли форма
-                document.getElementById('hiddenTagName').value = newTagName; // Установка значения в скрытое поле
-                addTagForm.submit(); // Отправка скрытой формы
+            if (addTagForm) {
+                document.getElementById('hiddenTagName').value = newTagName;
+                addTagForm.submit();
             } else {
                 console.error('Форма addTagForm не найдена.');
             }
@@ -100,10 +117,9 @@
 </script>
 
 <style>
-    /* Эффект при наведении на кнопку */
     .tag-label:hover {
-        background-color: #40886E; /* Цвет при наведении */
-        color: white; /* Цвет текста при наведении */
+        background-color: #40886E;
+        color: white;
     }
 </style>
 {% endblock %}
