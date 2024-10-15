@@ -30,7 +30,7 @@ from django.contrib.messages import constants as messages
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 env_file_path = BASE_DIR / '.env'
@@ -38,8 +38,7 @@ env_file_path = BASE_DIR.parent / '.env'
 env.read_env(env_file_path)
 
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", '0.0.0.0',
-                 'personal-assistant-sudo-team.koyeb.app']
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", '0.0.0.0', 'personal-assistant-sudo-team.koyeb.app']
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -48,7 +47,7 @@ SECRET_KEY = env('SECRET_KEY')
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost',
     'http://127.0.0.1:8000',
-    'personal-assistant-sudo-team.koyeb.app'
+    'https://personal-assistant-sudo-team.koyeb'
 ]
 
 # Application definition
@@ -163,7 +162,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_ROOT = BASE_DIR / 'media'
