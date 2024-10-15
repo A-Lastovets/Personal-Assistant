@@ -28,17 +28,13 @@ from django.contrib.messages import constants as messages
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent
 
 env = environ.Env()
-
-if DEBUG:
-    env_file_path = BASE_DIR / '.env'
-else:
-    env_file_path = BASE_DIR.parent / '.env'
-
+env_file_path = BASE_DIR / '.env'
+env_file_path = BASE_DIR.parent / '.env'
 env.read_env(env_file_path)
 
 
@@ -170,10 +166,8 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-if DEBUG:
-    MEDIA_ROOT = BASE_DIR / 'media'
-else:
-    MEDIA_ROOT = BASE_DIR.parent / 'media'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 MEDIA_URL = '/media/'
 
 # Default primary key field type
