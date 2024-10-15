@@ -91,8 +91,10 @@ class LoginForm(AuthenticationForm):
 
 class ProfileForm(forms.ModelForm):
     avatar = forms.ImageField(
+        required=False,
         widget=forms.ClearableFileInput(attrs={
             'class': 'form-control-file',
+            'accept': 'image/*',
         })
     )
 
@@ -102,3 +104,10 @@ class ProfileForm(forms.ModelForm):
         labels = {
             'avatar': 'Аватар',
         }
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if avatar:
+            if avatar.size > 4 * 2048 * 2048:
+                raise forms.ValidationError("Файл должен быть меньше 4 МБ.")
+        return avatar

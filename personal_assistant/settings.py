@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'contacts_app',
     'files_app',
     'notes_app',
@@ -108,6 +109,7 @@ DATABASES = {
         'USER': env('KOYEB_DB_USER'),
         'PASSWORD': env('KOYEB_DB_PASSWORD'),
         'HOST': env('KOYEB_DB_HOST'),
+        'PORT': env('KOYEB_DB_PORT'),
         'OPTIONS': {'sslmode': 'require'},
     }
 }
@@ -168,6 +170,20 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
+
+# Настройки AWS
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_REGION_NAME = 'eu-north-1'  # Регион Стокгольм
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
+
+# URL для доступа к статическим и медиафайлам
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
+# Настройки для django-storages
+DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Boto3'
+STATICFILES_STORAGE = 'storages.backends.s3.S3Boto3'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
