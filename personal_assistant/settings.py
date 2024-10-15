@@ -43,7 +43,7 @@ env.read_env(env_file_path)
 
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", '0.0.0.0',
-                 'impossible-alexis-anton-team-550531ea.koyeb.app']
+                 'personal-assistant-sudo-team.koyeb.app']
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -52,7 +52,7 @@ SECRET_KEY = env('SECRET_KEY')
 CSRF_TRUSTED_ORIGINS = [
     'https://localhost',
     'http://127.0.0.1:8000',
-    'impossible-alexis-anton-team-550531ea.koyeb.app'
+    'personal-assistant-sudo-team.koyeb.app'
 ]
 
 # Application definition
