@@ -69,5 +69,4 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     email_template_name = 'users/password_reset_email.html'
     html_email_template_name = 'users/password_reset_email.html'
     success_url = reverse_lazy('users:password_reset_done')
-    success_message = "Лист з інструкціями для зміни паролю відправлено на пошту %(email)s."
     subject_template_name = 'users/password_reset_subject.txt'

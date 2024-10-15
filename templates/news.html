@@ -66,27 +66,27 @@
         .news-list {
             display: none;
             margin-top: 10px;
-            background-color: #f9f9f9; /* Змінено фон на світліший */
-            border: 1px solid #ccc; /* Додано рамку */
-            border-radius: 8px; /* Закруглені краї */
-            padding: 10px; /* Внутрішні відступи */
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
         }
 
         .toggle-news {
             display: block;
             width: 100%;
             padding: 10px;
-            background-color: #007bff; /* Темніший колір кнопки */
-            color: white; /* Білий текст на кнопці */
+            background-color: #007bff; 
+            color: white; 
             border: none;
             cursor: pointer;
             text-align: left;
             margin: 5px 0;
-            border-radius: 5px; /* Закруглені краї кнопки */
+            border-radius: 5px;
         }
 
         .toggle-news:hover {
-            background-color: #0056b3; /* Темніший колір при наведенні */
+            background-color: #0056b3; 
         }
 
         ul {
@@ -95,29 +95,29 @@
 
         li {
             margin-bottom: 15px;
-            background-color: #ffffff; /* Білий фон для кожного елемента списку */
-            border-radius: 5px; /* Закруглені краї для елементів списку */
-            padding: 10px; /* Внутрішні відступи для елементів списку */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тінь для елементів списку */
+            background-color: #ffffff; 
+            border-radius: 5px; 
+            padding: 10px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .back-to-top {
-            text-align: center; /* Центрування кнопки */
-            margin-top: 20px; /* Відстань від новин */
+            text-align: center;
+            margin-top: 20px;
         }
 
         .button {
-            padding: 10px 20px; /* Внутрішні відступи кнопки */
-            background-color: #007bff; /* Колір кнопки */
-            color: white; /* Колір тексту */
-            border: none; /* Без рамки */
-            border-radius: 5px; /* Закруглені краї */
-            cursor: pointer; /* Курсор при наведенні */
-            transition: background-color 0.3s; /* Плавний перехід */
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px;
+            cursor: pointer; 
+            transition: background-color 0.3s; 
         }
 
         .button:hover {
-            background-color: #0056b3; /* Темніший колір при наведенні */
+            background-color: #0056b3; 
         }
     </style>
 
@@ -128,17 +128,17 @@
 
             if (newsList.style.display === "block") {
                 newsList.style.display = "none";
-                backToTopButton.style.display = "none"; // Сховати кнопку
+                backToTopButton.style.display = "none"; 
             } else {
                 newsList.style.display = "block";
-                backToTopButton.style.display = "block"; // Показати кнопку
+                backToTopButton.style.display = "block"; 
             }
         }
 
         function scrollToTop() {
             window.scrollTo({
                 top: 0,
-                behavior: 'smooth' // Плавна прокрутка
+                behavior: 'smooth' 
             });
         }
     </script>

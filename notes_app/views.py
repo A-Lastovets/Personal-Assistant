@@ -53,7 +53,7 @@ def add_note(request):
 def note_list(request):
     query = request.GET.get('q')
     tag_query = request.GET.get('tag')
-    notes = Note.objects.filter(created_by=request.user)
+    notes = Note.objects.filter(created_by=request.user).order_by('-created_at')
 
     if query:
         notes = notes.filter(
@@ -73,9 +73,9 @@ def note_list(request):
 @login_required
 def edit_note(request, note_id):
     note = get_object_or_404(Note, id=note_id, created_by=request.user)
+
     if request.method == "POST":
-        form = NoteForm(request.POST, instance=note,
-                        user=request.user)
+        form = NoteForm(request.POST, instance=note)
         if form.is_valid():
             note = form.save(commit=False)
             note.created_by = request.user
@@ -92,6 +92,7 @@ def edit_note(request, note_id):
                     except Tag.DoesNotExist:
                         continue
 
+            # Добавляем новый тег, если он был введён
             new_tag_name = request.POST.get('new_tag')
             if new_tag_name:
                 tag, created = Tag.objects.get_or_create(
@@ -100,11 +101,20 @@ def edit_note(request, note_id):
                 )
                 if created:
                     note.tags.add(tag)
+
             return redirect('note_list')
     else:
-        form = NoteForm(instance=note, user=request.user)
+        form = NoteForm(instance=note)
 
-    return render(request, 'notes_app/edit_note.html', {'form': form, 'note': note})
+    user_tags = Tag.objects.filter(created_by=request.user)
+
+    return render(request, 'notes_app/edit_note.html', {'form': form, 'note': note, 'tags': user_tags})
+
+
+
+
+
+
 
 
 @login_required
@@ -144,4 +154,4 @@ def add_tag(request):
                 messages.success(request, 'Тег успішно додано!')
             else:
                 messages.warning(request, 'Тег вже існує!')
-    return redirect('add_note')
+    return redirect(request.META.get('HTTP_REFERER', 'add_note'))

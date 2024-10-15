@@ -25,14 +25,17 @@ class FileListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset().filter(
             user=self.request.user).order_by('-uploaded_at')
+        
         category = self.request.GET.get('category')
+
+        print(f"Категория фильтра: {category}") 
 
         if category == 'all' or not category:
             return queryset
-
+        
         if category in dict(self.model.CATEGORY_CHOICES).keys():
             queryset = queryset.filter(category=category)
-
+        
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -45,8 +48,9 @@ class FileListView(ListView):
 
         context['files'] = page_obj
         context['is_paginated'] = paginator.num_pages > 1
-        context['selected_category'] = self.request.GET.get(
-            'category', 'all')
+        context['selected_category'] = self.request.GET.get('category', 'all')
+
+        return context
 
 
 def upload_file(request):
