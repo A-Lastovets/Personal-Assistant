@@ -3,28 +3,30 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from .models import Profile
 import requests
-from django.core.files.base import ContentFile
 from io import BytesIO
-from PIL import Image
+from django.core.files.base import ContentFile
 
-# Сигнал для создания профиля
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
         profile = Profile.objects.create(user=instance)
+        
+        # Загрузка аватара по умолчанию с внешнего URL (Amazon S3)
+        try:
+            default_avatar_url = 'https://sudoteam.s3.eu-north-1.amazonaws.com/default_avatar.png'
+            response = requests.get(default_avatar_url, timeout=10)  # Добавляем тайм-аут для запроса
+
+            if response.status_code == 200:
+                # Сохраняем изображение, как файл в avatar
+                img = BytesIO(response.content)
+                file_name = f'{instance.username}_avatar.png'
+                profile.avatar.save(file_name, ContentFile(img.getvalue()), save=False)
+
+        except requests.RequestException as e:
+            print(f"Error fetching avatar from {default_avatar_url}: {e}")
+        
         profile.save()
 
-# Сигнал для установки аватара по умолчанию при создании профиля
-@receiver(post_save, sender=Profile)
-def set_default_avatar(sender, instance, created, **kwargs):
-    if created and not instance.avatar:
-        # Ссылка на аватар по умолчанию
-        default_avatar_url = 'https://sudoteam.s3.eu-north-1.amazonaws.com/default_avatar.png'
-        response = requests.get(default_avatar_url)
-        if response.status_code == 200:
-            img = Image.open(BytesIO(response.content))
-            img_io = BytesIO()
-            img.save(img_io, format='PNG')
-            img_file = ContentFile(img_io.getvalue(), 'default_avatar.png')
-            instance.avatar.save('default_avatar.png', img_file, save=False)
-            instance.save()
+@receiver(post_save, sender=User)
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()
