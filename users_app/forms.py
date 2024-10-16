@@ -94,7 +94,6 @@ class ProfileForm(forms.ModelForm):
         required=False,
         widget=forms.ClearableFileInput(attrs={
             'class': 'form-control-file',
-            'accept': 'image/*',
         })
     )
 
