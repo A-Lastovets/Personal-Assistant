@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Документ{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'SudoTeam.ico' %}">
+    <link rel="stylesheet" href="{% static 'pagination.css' %}">
+    <link rel="stylesheet" href="{% static 'contacts_app/add_contact.css' %}">
+    <link rel="stylesheet" href="{% static 'contacts_app/contacts_list.css' %}">
+    <link rel="stylesheet" href="{% static 'files_app/files_app.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap" rel="stylesheet">
+</head>
+<body style="background-color: #3D6657; color: #E2B29B;">
+    <nav class="navbar navbar-expand-lg" style="background-color: #155840; color: #E2B29B;">
+        <a class="navbar-brand" href="{% url 'home' %}" style="color: #81BDA8;">IoI</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}" style="color: #E2B29B;">Головна</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact_home' %}" style="color: #E2B29B;">Контакти</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'note_home' %}" style="color: #E2B29B;">Нотатки</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'file_list' %}" style="color: #E2B29B;">Хмарне сховище</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <span class="navbar-text ml-auto" style="color: #E2B29B;">
+                {% if user.is_authenticated %}
+                    Привіт, <a href="{% url 'users:profile' %}" style="color: #81BDA8;">{{ user.username }}</a>!
+                    <a href="{% url 'users:logout' %}" class="btn btn-danger" style="margin-left: 10px; background-color: #CA825F; border: none;">Вийти</a>
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="btn btn-primary" style="background-color: #6FBDA2; border: none;">Вхід</a>
+                    <a href="{% url 'users:signup' %}" class="btn btn-primary" style="background-color: #6FBDA2; border: none; margin-left: 10px;">Реєстрація</a>
+                {% endif %}
+            </span>
+        </div>
+    </nav>
+    
+    <div class="container mt-4">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Новини{% endblock %}
+
+{% block content %}
+    <div class="header-container">
+        <h2>Останні новини</h2>
+        <div class="exchange-rate">
+            <h3>Популярні валютні курси</h3>
+            {% if usd_to_uah and eur_to_uah and pln_to_uah %}
+                <p>USD to UAH: {{ usd_to_uah }}</p>
+                <p>EUR to UAH: {{ eur_to_uah }}</p>
+                <p>PLN to UAH: {{ pln_to_uah }}</p>
+            {% else %}
+                <p>{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="news-container">
+        {% for category, articles in news_by_category.items %}
+            <div class="news-section">
+                <button class="toggle-news" onclick="toggleNews('{{ category|slugify }}')">
+                    {{ category|title }} News
+                </button>
+                <div class="news-list" id="{{ category|slugify }}">
+                    {% if articles %}
+                        <ul>
+                            {% for article in articles %}
+                                <li>
+                                    <h4><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h4>
+                                    <p>{{ article.description }}</p>
+                                    <p><strong>Автор:</strong>
+                                    {% if article.author and article.author != "None" %}
+                                        {{ article.author }}
+                                    {% else %}
+                                        Невідомий
+                                    {% endif %}
+                                    </p>
+                                    <p>{{ article.published_at }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="back-to-top">
+                            <button onclick="scrollToTop()" class="button">Повернутися на верх сторінки</button>
+                        </div>
+                    {% else %}
+                        <p>Не знайдено новин на цю категорію.</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exchange-rate {
+            text-align: right;
+        }
+
+        .news-list {
+            display: none;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .toggle-news {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff; 
+            color: white; 
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .toggle-news:hover {
+            background-color: #0056b3; 
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            background-color: #ffffff; 
+            border-radius: 5px; 
+            padding: 10px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-top {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px 20px; 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px;
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+        }
+
+        .button:hover {
+            background-color: #0056b3; 
+        }
+    </style>
+
+    <script>
+        function toggleNews(category) {
+            const newsList = document.getElementById(category);
+            const backToTopButton = newsList.querySelector('.back-to-top');
+
+            if (newsList.style.display === "block") {
+                newsList.style.display = "none";
+                backToTopButton.style.display = "none"; 
+            } else {
+                newsList.style.display = "block";
+                backToTopButton.style.display = "block"; 
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' 
+            });
+        }
+    </script>
+{% endblock %}

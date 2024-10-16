@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Найближчі дні народження{% endblock %}
+
+{% block content %}
+<style>
+    .contact-form-container select.form-control {
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+    }
+
+</style>
+
+<div class="card contact-form-container">
+    <h1 class="mb-4">Найближчі дні народження</h1>
+
+    <form method="GET" class="mb-4">
+        {{ form.period.label_tag }}
+        {{ form.period }}
+        <button type="submit" class="btn btn-primary">Фільтр</button>
+    </form>
+
+    <ul class="list-group">
+        {% for contact in upcoming_birthdays %}
+            <li class="list-group-item">
+                {{ contact.name }} - {{ contact.birthday }} ({{ contact.days_until_birthday }} днів до дня народження)
+            </li>
+        {% empty %}
+            <li class="list-group-item">Відсутні дні народження в найближчий час.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

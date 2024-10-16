@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Профіль{% endblock %}
+
+{% block content %}
+<div class="card" style="background-color: #3D6657; color: #E2B29B;">
+    <div class="card-header" style="background-color: #155840; color: #E2B29B;">
+        <h2 class="text-center">Ваш профіль</h2>
+    </div>
+    <div class="card-body">
+        <div class="form-group text-center">
+            <img src="{{ user.profile.avatar|default:'https://sudoteam.s3.eu-north-1.amazonaws.com/default_avatar.png' }}" class="rounded-circle" alt="Avatar" style="width: 150px; height: 150px;">
+        </div>
+
+        <div class="form-group">
+            <label for="username">Логін:</label>
+            <input type="text" id="username" value="{{ user.username }}" class="form-control" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="{{ user.email }}" class="form-control" readonly>
+        </div>
+    </div>
+</div>
+{% endblock %}

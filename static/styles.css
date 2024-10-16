@@ -1,0 +1,180 @@
+.alert-error, .errorlist {
+    color: crimson;
+}
+
+.alert-success {
+    color: green;
+}
+
+body {
+    background-color: #3D6657; /* Основной фон */
+    color: #E2B29B; /* Цвет текста */
+}
+
+.container {
+    max-width: 800px; /* Максимальная ширина контейнера */
+    margin: 0 auto; /* Центрирование контейнера */
+    padding: 20px; /* Внутренние отступы */
+}
+
+.card {
+    background-color: #155840; /* Цвет карточек */
+    color: #E2B29B; /* Цвет текста в карточках */
+    border: none; /* Убираем рамку */
+    border-radius: 10px; /* Скругленные углы */
+    padding: 20px; /* Отступы внутри карточек */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень для объема */
+}
+
+.card input.form-control, 
+.card select.form-control, 
+.card textarea.form-control {
+    background-color: #3D6657 !important; /* Темный фон для полей ввода */
+    color: #E2B29B !important; /* Цвет текста для полей ввода */
+    border: 1px solid #666; /* Цвет рамки для полей */
+    border-radius: 5px; /* Скругление углов */
+    padding: 10px; /* Внутренние отступы */
+    margin-bottom: 10px; /* Отступ между полями */
+    transition: border-color 0.3s, background-color 0.3s; /* Плавный переход для рамки и фона */
+}
+
+
+.card input.form-control:focus,
+.card select.form-control:focus,
+.card textarea.form-control:focus {
+    border-color: #d6a700 !important; /* Цвет рамки при фокусе */
+    outline: none; /* Убираем стандартный outline */
+    background-color: #4A7B65 !important; /* Темнее фон при фокусе */
+}
+
+
+.btn-primary {
+    background-color: #CA825F; /* Цвет кнопок */
+    border-color: #CA825F; /* Цвет рамки кнопок */
+}
+
+.btn-primary:hover {
+    background-color: #E2A385; /* Цвет кнопок при наведении */
+    border-color: #E2A385; /* Цвет рамки кнопок при наведении */
+}
+
+button {
+    background-color: #4e8e3a; /* Мягкий зеленый фон для кнопки */
+    color: #ffffff; /* Белый цвет текста для кнопки */
+    border: none; /* Убираем стандартную рамку */
+    border-radius: 5px; /* Скругление углов */
+    padding: 10px; /* Внутренние отступы */
+    margin-top: 20px; /* Отступ сверху для кнопки */
+    cursor: pointer; /* Указатель для кнопки */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Плавный переход цвета и тени при наведении */
+}
+
+button:hover {
+    background-color: #3a6e2a; /* Более темный зеленый цвет кнопки при наведении */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Тень для кнопки */
+}
+
+button:disabled {
+    background-color: #888; /* Серый цвет для неактивной кнопки */
+    cursor: not-allowed; /* Указатель для неактивной кнопки */
+}
+
+.list-group-item {
+    background-color: #3D6657; /* Темный фон для элементов списка */
+    color: #E2B29B; /* Цвет текста */
+}
+
+.list-group-item a {
+    color: #E2B29B; /* Цвет ссылки */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+.list-group-item a:hover {
+    text-decoration: underline; /* Подчеркивание при наведении на ссылку */
+}
+
+.btn-custom {
+    background-color: #CA825F; /* Цвет кнопки "Редактировать" */
+    border: none; /* Убираем стандартную рамку */
+    color: #FFFFFF !important;/* Цвет текста - белый для лучшей читаемости */
+    padding: 5px 10px; /* Уменьшаем внутренние отступы для меньшего размера */
+    font-weight: bold; /* Жирный текст для лучшей читаемости */
+    position: relative; /* Установка позиции для псевдоэлементов */
+    font-size: 0.875rem; /* Размер шрифта, чтобы кнопки были меньше */
+    text-decoration: none !important;
+}
+
+.btn-custom:hover {
+    background-color: #E2A385; /* Цвет кнопки "Редактировать" при наведении */
+}
+
+.btn-danger-custom {
+    background-color: #D9534F; /* Цвет кнопки "Удалить" */
+    border: none; /* Убираем стандартную рамку */
+    color: #ffffff !important;/* Цвет текста - белый для лучшей читаемости */
+    padding: 5px 10px; /* Уменьшаем внутренние отступы для меньшего размера */
+    font-weight: bold; /* Жирный текст для лучшей читаемости */
+    position: relative; /* Установка позиции для псевдоэлементов */
+    font-size: 0.875rem; /* Размер шрифта, чтобы кнопки были меньше */
+    text-decoration: none !important;
+}
+
+.btn-danger-custom:hover {
+    background-color: #C9302C; /* Цвет кнопки "Удалить" при наведении */
+}
+
+.btn-custom:focus,
+.btn-danger-custom:focus {
+    outline: 2px solid #E2B29B; /* Цвет обводки при фокусе */
+}
+
+.btn-custom:before,
+.btn-danger-custom:before {
+    content: ''; /* Псевдоэлемент для обводки текста */
+    position: absolute; /* Установка абсолютного позиционирования */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #E2B29B; /* Обводка */
+    z-index: -1; /* Подвинем псевдоэлемент на задний план */
+    transition: all 0.3s; /* Плавный переход для обводки */
+}
+
+.btn-custom:hover:before,
+.btn-danger-custom:hover:before {
+    border-color: #E2A385; /* Цвет обводки при наведении */
+}
+
+.btn-primary {
+    background-color: #CA825F !important; /* Цвет кнопки по умолчанию */
+    border-color: #CA825F !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #E2A385 !important; /* Цвет кнопки при наведении и фокусе */
+    border-color: #E2A385 !important;
+    box-shadow: none !important; /* Убираем тень, если она есть у Bootstrap */
+}
+
+.btn-primary:active {
+    background-color: #CA825F !important; /* Цвет кнопки при клике */
+    border-color: #CA825F !important;
+    box-shadow: none !important; /* Убираем тень при активном состоянии */
+}
+
+.btn-secondary {
+    background-color: #3D6657;
+    border-color: #3D6657; /* Цвет фона кнопки по умолчанию */
+    color: #E2B29B; /* Цвет текста */
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: #155840; /* Цвет фона кнопки при наведении */
+    border-color: #3D6657;
+    color: #E2B29B; /* Цвет текста */
+    box-shadow: none !important
+}
+

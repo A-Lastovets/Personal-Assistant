@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Пошук контактів{% endblock %}
+
+{% block content %}
+<style>
+        ::placeholder{
+        color: #e2b19b9a !important;
+    }
+</style>
+
+<div class="card contact-form-container">
+    <h1 class="mb-4">Пошук контактів</h1>
+
+    <form method="GET" class="mb-4">
+        <input type="text" name="query" placeholder="Пошук за ім'ям" class="form-control" value="{{ query }}">
+        <button type="submit" class="btn btn-primary mt-2">Пошук</button>
+    </form>
+
+    <ul class="list-group">
+        {% for contact in contacts %}
+            <li class="list-group-item">
+                <a href="{% url 'contact_detail' contact.id %}">{{ contact.name }}</a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Відсутні результати</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
