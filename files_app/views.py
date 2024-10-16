@@ -137,8 +137,8 @@ def download_file(request, file_id):
         print(f"Помилка HTTP: {e.response.status_code}")
         return HttpResponse(f"Помилка: не вдалося завантажити файл. Код помилки: {e.response.status_code}", status=500)
     except Exception as e:
-        print(f"Ошибка: {str(e)}")
-        return HttpResponse(f"Ошибка: {str(e)}", status=500)
+        print(f"Помилка: {str(e)}")
+        return HttpResponse(f"Помилка: {str(e)}", status=500)
 
 
 def delete_file(request, file_id):
@@ -155,11 +155,11 @@ def delete_file(request, file_id):
             file_instance.delete()
             return redirect('file_list')
         else:
-            print(f"Файл не найден или не был удалён. Ответ: {response}")
-            return HttpResponse("Ошибка: файл не найден или не был удалён.", status=404)
+            print(f"Файл не знайдено або його було видалено. Відповідь: {response}")
+            return HttpResponse("Помилка: Файл не знайдено або його було видалено.", status=404)
 
     except cloudinary.exceptions.Error as e:
-        return HttpResponse("Ошибка: не удалось получить информацию о файле.", status=500)
+        return HttpResponse("Помилка: не вдалося отримати інформацію про файл.", status=500)
     except Exception as e:
-        print(f"Ошибка при удалении файла из Cloudinary: {str(e)}")
-        return HttpResponse("Ошибка: не удалось удалить файл.", status=500)
+        print(f"Помилка видалення файлу з Cloudinary: {str(e)}")
+        return HttpResponse("Помилка: не вдалося видалити файл.", status=500)
