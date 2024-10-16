@@ -16,7 +16,6 @@ def fetch_and_save_default_avatar(profile, username):
             img = BytesIO(response.content)
             file_name = f'{username}_avatar.png'
             profile.avatar.save(file_name, ContentFile(img.getvalue()), save=False)
-            profile.save()
     except requests.RequestException as e:
         print(f"Error fetching avatar from {default_avatar_url}: {e}")
 
@@ -25,11 +24,4 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         profile = Profile.objects.create(user=instance)
         fetch_and_save_default_avatar(profile, instance.username)
-
-@receiver(post_save, sender=User)
-def save_profile(sender, instance, **kwargs):
-    profile = instance.profile
-    if not profile.avatar:
-        fetch_and_save_default_avatar(profile, instance.username)
-    
-    profile.save()
+        profile.save()  # Сохраняем профиль с загруженным аватаром
