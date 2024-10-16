@@ -6,7 +6,8 @@ from .models import Profile
 @receiver(post_save, sender=User)
 def create_profile(sender, instance, created, **kwargs):
     if created:
-        profile = Profile.objects.create(user=instance)
-        # Сохраняем URL по умолчанию
-        profile.avatar = 'https://sudoteam.s3.eu-north-1.amazonaws.com/default_avatar.png'
-        profile.save()
+        Profile.objects.create(user=instance, avatar='https://sudoteam.s3.eu-north-1.amazonaws.com/default_avatar.png')
+
+@receiver(post_save, sender=User)
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()
