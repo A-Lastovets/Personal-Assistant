@@ -19,7 +19,7 @@ class Contact(models.Model):
         User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=255)
-    phone_number = PhoneNumberField(null=False, blank=False, unique=True)
+    phone_number = PhoneNumberField(null=False, blank=False, unique=False)
     email = models.EmailField()
     birthday = models.DateField()
 
