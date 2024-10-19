@@ -27,10 +27,18 @@
                         </div>
                     </li>
                 {% empty %}
-                    <li class="list-group-item" style="background-color: #3D6657; color: #E2B29B;">Контакти відсутні.</li>
+                    <li class="list-group-item" style="background-color: #3D6657; color: #E2B29B;">
+                        Контакти відсутні. 
+                    </li>
                 {% endfor %}
             </ul>
         </div>
+
+        {% if not contacts %}
+        <div class="text-center mt-4">
+            <a href="{% url 'add_contact' %}" class="btn btn-primary">Додати перший контакт</a>
+        </div>
+        {% endif %}
 
         <!-- Пагинация -->
         {% if contacts.paginator.num_pages > 1 %}

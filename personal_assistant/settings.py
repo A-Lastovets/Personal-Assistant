@@ -109,11 +109,9 @@ DATABASES = {
         'USER': env('KOYEB_DB_USER'),
         'PASSWORD': env('KOYEB_DB_PASSWORD'),
         'HOST': env('KOYEB_DB_HOST'),
-        'PORT': env('KOYEB_DB_PORT'),
         'OPTIONS': {'sslmode': 'require'},
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
