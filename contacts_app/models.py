@@ -9,19 +9,25 @@ class Contact(models.Model):
     Модель для зберігання інформації про контакт у книзі контактів.
 
     Attributes:
+        user (User): Користувач, якому належить контакт.
         name (str): Ім'я контакту.
         address (str): Адреса контакту.
         phone_number (PhoneNumberField): Номер телефону контакту.
-        email (str): Електронна пошта контакту. Перевіряється валідатором EmailValidator.
+        email (str): Електронна пошта контакту.
         birthday (date): День народження контакту.
     """
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     address = models.CharField(max_length=255)
     phone_number = PhoneNumberField(null=False, blank=False)
     email = models.EmailField()
     birthday = models.DateField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'phone_number'], name='unique_user_phone_number'),
+            models.UniqueConstraint(fields=['user', 'email'], name='unique_user_email'),
+        ]
 
     def __str__(self):
         return self.name
