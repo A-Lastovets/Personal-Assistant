@@ -49,23 +49,22 @@ class ContactForm(forms.ModelForm):
         return phone_number
 
     def clean_email(self):
-        """
-        Валідація електронної пошти. Перевіряє, що електронна пошта коректна
-        та унікальна в базі даних.
-        """
-        email = self.cleaned_data.get('email')
+    """
+    Валідація електронної пошти. Перевіряє, що електронна пошта коректна
+    та унікальна для поточного користувача.
+    """
+    email = self.cleaned_data.get('email')
 
-        try:
-            EmailValidator()(email)
-        except ValidationError:
-            raise ValidationError("Enter a valid email address.")
+    try:
+        EmailValidator()(email)
+    except ValidationError:
+        raise ValidationError("Enter a valid email address.")
 
-        contact_id = self.instance.id
+    contact_id = self.instance.id  # Використовуємо ID для виключення поточного контакту
+    if Contact.objects.filter(user=self.user, email=email).exclude(id=contact_id).exists():
+        raise ValidationError("This email address is already in use by another contact for this user.")
 
-        if Contact.objects.filter(email=email).exclude(id=contact_id).exists():
-            raise ValidationError("This email address is already in use.")
-
-        return email
+    return email
 
 class BirthdayFilterForm(forms.Form):
     """

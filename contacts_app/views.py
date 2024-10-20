@@ -84,12 +84,12 @@ def edit_contact(request, contact_id):
         Contact, id=contact_id, user=request.user)
 
     if request.method == 'POST':
-        form = ContactForm(request.POST, instance=contact)
+        form = ContactForm(request.POST, instance=contact, user=request.user)  # Додаємо user
         if form.is_valid():
             form.save()
             return redirect('contact_list')
     else:
-        form = ContactForm(instance=contact)
+        form = ContactForm(instance=contact, user=request.user)  # Додаємо user
 
     return render(request, 'contacts_app/edit_contact.html', {
         'form': form,
