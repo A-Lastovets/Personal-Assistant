@@ -46,6 +46,10 @@ class ContactForm(forms.ModelForm):
         if not phone_number:
             raise ValidationError("This field is required.")
 
+        contact_id = self.instance.id  # Використовуємо ID для виключення поточного контакту
+        if Contact.objects.filter(user=self.user, phone_number=phone_number).exclude(id=contact_id).exists():
+            raise ValidationError("This phone number is already in use by another contact for this user.")
+    
         return phone_number
 
     def clean_email(self):
