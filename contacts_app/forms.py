@@ -48,7 +48,7 @@ class ContactForm(forms.ModelForm):
 
         contact_id = self.instance.id  # Використовуємо ID для виключення поточного контакту
         if Contact.objects.filter(user=self.user, phone_number=phone_number).exclude(id=contact_id).exists():
-            raise ValidationError("This phone number is already in use by another contact for this user.")
+            raise ValidationError("This phone number is already exists in your contact list. Please check the correct input and try again.")
     
         return phone_number
 
@@ -66,7 +66,7 @@ class ContactForm(forms.ModelForm):
 
         contact_id = self.instance.id  # Використовуємо ID для виключення поточного контакту
         if Contact.objects.filter(user=self.user, email=email).exclude(id=contact_id).exists():
-            raise ValidationError("This email address is already in use by another contact for this user.")
+            raise ValidationError("This email address is already exists in your contact list. Please check the correct input and try again.")
 
         return email
 
