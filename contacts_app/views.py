@@ -37,14 +37,14 @@ def add_contact(request):
         HttpResponse: Сторінка з формою для додавання контакту.
     """
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = ContactForm(request.POST, user=request.user)
         if form.is_valid():
             contact = form.save(commit=False)
             contact.user = request.user
             contact.save()
             return redirect('contact_list')
     else:
-        form = ContactForm()
+        form = ContactForm(user=request.user)
 
     return render(request, 'contacts_app/add_contact.html', {'form': form})
 

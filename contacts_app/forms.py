@@ -28,6 +28,10 @@ class ContactForm(forms.ModelForm):
             'birthday': 'Дата народження',
         }
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # Отримуємо користувача з kwargs
+        super(ContactForm, self).__init__(*args, **kwargs)
+
     def clean_phone_number(self):
         """
         Валідація номера телефону. Перевіряє, що номер телефону коректний.
@@ -57,6 +61,7 @@ class ContactForm(forms.ModelForm):
             raise ValidationError("Enter a valid email address.")
 
         contact_id = self.instance.id
+
         if Contact.objects.filter(email=email).exclude(id=contact_id).exists():
             raise ValidationError("This email address is already in use.")
 
