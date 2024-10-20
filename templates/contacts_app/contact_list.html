@@ -14,6 +14,7 @@
                 <input type="text" name="search" placeholder="Пошук..." class="form-control form-control-search" value="{{ request.GET.search }}">
                 <button type="submit" class="btn btn-search mt-2">Пошук</button>
             </form>
+            <a href="{% url 'add_contact' %}" class="btn btn-primary">Додати контакт</a>
         </div>
 
         <div class="card" style="background-color: #40886E; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);">
