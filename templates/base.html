@@ -30,6 +30,7 @@
             .navbar-nav {
                 width: 100%;
                 text-align: center;
+                padding: 0;
             }
 
             .navbar-nav .nav-item {
@@ -39,7 +40,16 @@
             }
 
             .navbar-nav .nav-link {
-                padding: 10px 15px;
+                padding: 12px 15px;
+                background-color: #6FBDA2;
+                color: #155840;
+                border-radius: 5px;
+                margin: 5px 0;
+                transition: background-color 0.3s;
+            }
+
+            .navbar-nav .nav-link:hover {
+                background-color: #81BDA8;
             }
 
             .navbar-text {
@@ -48,11 +58,20 @@
                 align-items: flex-start;
                 width: 100%;
                 justify-content: center;
+                padding: 10px;
             }
 
             .btn {
                 width: 100%;
                 margin-top: 10px;
+                background-color: #E2B29B;
+                color: #155840;
+                border: none;
+                padding: 12px 15px;
+            }
+
+            .navbar-toggler {
+                background-color: #E2B29B;
             }
 
             .currency-section {
@@ -147,8 +166,8 @@
                     Hi, <a href="{% url 'users:profile' %}" style="color: #81BDA8;">{{ user.username }}</a>!
                     <a href="{% url 'users:logout' %}" class="btn btn-danger" style="margin-left: 10px; background-color: #CA825F; border: none;">Log out</a>
                 {% else %}
-                    <a href="{% url 'users:login' %}" class="btn btn-primary" style="background-color: #6FBDA2; border: none;">Login</a>
-                    <a href="{% url 'users:signup' %}" class="btn btn-primary" style="background-color: #6FBDA2; border: none; margin-left: 10px;">Sign up</a>
+                    <a href="{% url 'users:login' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Login</a>
+                    <a href="{% url 'users:signup' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none; margin-left: 10px;">Sign up</a>
                 {% endif %}
             </span>
         </div>
