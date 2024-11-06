@@ -29,12 +29,12 @@
             }
 
             .navbar-nav {
-                display: none;
+                display: none; /* Сховуємо навігаційне меню */
             }
 
             .navbar-text {
                 display: flex;
-                justify-content: flex-end;
+                justify-content: flex-end; /* Розміщуємо кнопки справа */
                 width: 100%;
             }
 
@@ -99,7 +99,10 @@
         <a class="navbar-brand" href="{% url 'home' %}" style="color: #81BDA8;">PA</a>
         <div class="navbar-text ml-auto">
             {% if user.is_authenticated %}
-                Hi, <a href="{% url 'users:profile' %}" style="color: #81BDA8;">{{ user.username }}</a>!
+                <a href="{% url 'contact_home' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Contacts</a>
+                <a href="{% url 'note_home' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Notes</a>
+                <a href="{% url 'file_list' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Cloud storage</a>
+                <a href="{% url 'users:profile' %}" style="color: #81BDA8;">Hi, {{ user.username }}!</a>
                 <a href="{% url 'users:logout' %}" class="btn btn-danger" style="background-color: #CA825F; border: none;">Log out</a>
             {% else %}
                 <a href="{% url 'users:login' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Login</a>
