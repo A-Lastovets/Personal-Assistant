@@ -6,15 +6,15 @@ from django.contrib.auth.models import User
 
 class Contact(models.Model):
     """
-    Модель для зберігання інформації про контакт у книзі контактів.
+    Model for storing contact information in a contact book.
 
     Attributes:
-        user (User): Користувач, якому належить контакт.
-        name (str): Ім'я контакту.
-        address (str): Адреса контакту.
-        phone_number (PhoneNumberField): Номер телефону контакту.
-        email (str): Електронна пошта контакту.
-        birthday (date): День народження контакту.
+        user (User): The user who owns the contact.
+        name (str): The contact's name.
+        address (str): The contact's address.
+        phone_number (PhoneNumberField): The contact's phone number.
+        email (str): The contact's email.
+        birthday (date): The contact's birthday.
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
@@ -34,10 +34,10 @@ class Contact(models.Model):
 
     def days_until_birthday(self):
         """
-        Обчислює кількість днів до наступного дня народження.
+        Calculates the number of days until the next birthday.
 
         Returns:
-            int: Кількість днів до наступного дня народження, або None, якщо день народження не вказано.
+            int: The number of days until the next birthday, or None if the birthday is not specified.
         """
         if not self.birthday:
             return None

@@ -39,7 +39,7 @@ def loginuser(request):
             return redirect(to='home')
         else:
             messages.error(
-                request, 'Логін або пароль не вірні. Спробуйте ще раз.')
+                request, 'Invalid username or password. Please try again.')
             return render(request, 'users/login.html', context={"form": form})
 
     return render(request, 'users/login.html', context={"form": LoginForm()})

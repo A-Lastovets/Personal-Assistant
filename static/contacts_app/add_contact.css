@@ -1,37 +1,37 @@
 .contact-form-container {
-    background-color: #40886E; /* Основной цвет карточки */
-    color: #E2B29B; /* Цвет текста в карточке */
-    border-radius: 10px; /* Скругленные углы */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень для объема */
-    padding: 20px; /* Отступы внутри карточки */
+    background-color: #40886E;
+    color: #E2B29B;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    padding: 20px;
 }
 
 input, 
 select, 
 textarea {
-    background-color: #3D6657; /* Темный фон для полей ввода */
-    color: #E2B29B; /* Цвет текста для полей ввода */
-    border: 1px solid #666; /* Цвет рамки для полей */
-    border-radius: 5px; /* Скругление углов */
-    padding: 10px; /* Внутренние отступы */
-    margin-bottom: 10px; /* Отступ между полями */
-    transition: border-color 0.3s, background-color 0.3s; /* Плавный переход для рамки и фона */
+    background-color: #3D6657;
+    color: #E2B29B; 
+    border: 1px solid #666; 
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px; 
+    transition: border-color 0.3s, background-color 0.3s;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-    border-color: #d6a700; /* Цвет рамки при фокусе */
-    outline: none; /* Убираем стандартный outline */
-    background-color: #4A7B65; /* Темнее фон при фокусе */
+    border-color: #d6a700;
+    outline: none; 
+    background-color: #4A7B65; 
 }
 
 .btn-primary {
-    background-color: #CA825F; /* Цвет кнопок */
-    border-color: #CA825F; /* Цвет рамки кнопок */
+    background-color: #CA825F; 
+    border-color: #CA825F; 
 }
 
 .btn-primary:hover {
-    background-color: #E2A385; /* Цвет кнопок при наведении */
-    border-color: #E2A385; /* Цвет рамки кнопок при наведении */
+    background-color: #E2A385; 
+    border-color: #E2A385; 
 }

@@ -28,7 +28,7 @@ class FileListView(ListView):
         
         category = self.request.GET.get('category')
 
-        print(f"Категория фильтра: {category}") 
+        print(f"Filter Category: {category}") 
 
         if category == 'all' or not category:
             return queryset
@@ -95,7 +95,7 @@ def upload_file(request):
                 file_instance.save()
                 return redirect('file_list')
             except Exception as e:
-                print(f"Помилка під час завантаження файлу: {e}")
+                print(f"Error uploading file: {e}")
                 return render(request, 'files_app/upload.html', {'form': form, 'error': str(e)})
     else:
         form = FileUploadForm()
@@ -110,7 +110,7 @@ def download_file(request, file_id):
     if not file_url.endswith(file_instance.original_extension):
         file_url += file_instance.original_extension
 
-    print(f"URL для завантаження: '{file_url}'")
+    print(f"Upload URL: '{file_url}'")
 
     try:
         response = requests.get(file_url)
@@ -134,11 +134,11 @@ def download_file(request, file_id):
         return download_response
 
     except requests.HTTPError as e:
-        print(f"Помилка HTTP: {e.response.status_code}")
-        return HttpResponse(f"Помилка: не вдалося завантажити файл. Код помилки: {e.response.status_code}", status=500)
+        print(f"HTTP Error: {e.response.status_code}")
+        return HttpResponse(f"Error: Failed to upload file. Error code: {e.response.status_code}", status=500)
     except Exception as e:
-        print(f"Ошибка: {str(e)}")
-        return HttpResponse(f"Ошибка: {str(e)}", status=500)
+        print(f"Error: {str(e)}")
+        return HttpResponse(f"Error: {str(e)}", status=500)
 
 
 def delete_file(request, file_id):
@@ -149,17 +149,17 @@ def delete_file(request, file_id):
     try:
         response = cloudinary.uploader.destroy(
             public_id, resource_type=resource_type, invalidate=True)
-        print(f"Ответ от Cloudinary: {response}")
+        print(f"Response from Cloudinary: {response}")
 
         if response.get('result') == 'ok' or response.get('result') == 'deleted':
             file_instance.delete()
             return redirect('file_list')
         else:
-            print(f"Файл не найден или не был удалён. Ответ: {response}")
-            return HttpResponse("Ошибка: файл не найден или не был удалён.", status=404)
+            print(f"File not found or has been deleted. Response: {response}")
+            return HttpResponse("Error: File not found or has been deleted.", status=404)
 
     except cloudinary.exceptions.Error as e:
-        return HttpResponse("Ошибка: не удалось получить информацию о файле.", status=500)
+        return HttpResponse("Error: Unable to retrieve file information.", status=500)
     except Exception as e:
-        print(f"Ошибка при удалении файла из Cloudinary: {str(e)}")
-        return HttpResponse("Ошибка: не удалось удалить файл.", status=500)
+        print(f"Error deleting file from Cloudinary: {str(e)}")
+        return HttpResponse("Error: Failed to delete file.", status=500)

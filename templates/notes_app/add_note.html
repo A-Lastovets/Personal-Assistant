@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Створити нотатку{% endblock %}
+{% block title %}Create note{% endblock %}
 
 {% load notes_custom_filters %}
 {% block content %}
 <div class="card contact-form-container mt-4 shadow">
     <div class="card-header" style="background-color: #155840; color: #E2B29B;">
-        <h1 class="m-2">Створити нотатку</h1>
+        <h1 class="m-2">Create note</h1>
     </div>
 
     <div class="card-body">
@@ -50,13 +50,13 @@
             </div>
 
             <div class="form-group">
-                <label for="newTagName">Новий тег:</label>
-                <input type="text" id="newTagName" class="form-control mt-2" placeholder="Введіть ім'я нового тегу">
-                <button type="button" class="btn btn-primary mt-2" id="createTagButton">Створити тег</button>
+                <label for="newTagName">New Tag:</label>
+                <input type="text" id="newTagName" class="form-control mt-2" placeholder="Enter a name for the new tag">
+                <button type="button" class="btn btn-primary mt-2" id="createTagButton">Create tag</button>
             </div>
         
-            <button type="submit" class="btn btn-success mt-3">Додати нотатку</button>
-            <a href="{% url 'note_list' %}" class="btn btn-info mt-3">Назад до списку</a>
+            <button type="submit" class="btn btn-success mt-3">Add note</button>
+            <a href="{% url 'note_list' %}" class="btn btn-info mt-3">Back to notes list</a>
         </form>
 
         <form method="POST" action="{% url 'add_tag' %}" id="addTagForm" style="display:none;">
@@ -101,7 +101,7 @@
                 document.getElementById('hiddenTagName').value = newTagName;
                 addTagForm.submit();
             } else {
-                console.error('Форма addTagForm не найдена.');
+                console.error('The addTagForm was not found.');
             }
         }
     });
@@ -120,6 +120,31 @@
     .tag-label:hover {
         background-color: #40886E;
         color: white;
+    }
+
+    @media (max-width: 768px) {
+        .card {
+            width: 100%;
+            margin: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .form-control {
+            padding: 10px;
+        }
+
+        .tag-label {
+            font-size: 0.9rem;
+            padding: 4px 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
     }
 </style>
 {% endblock %}

@@ -6,9 +6,8 @@ from django.core.validators import EmailValidator
 
 class ContactForm(forms.ModelForm):
     """
-    Форма для створення та редагування контактів.
-
-    Використовує модель Contact і включає перевірку номера телефону та електронної пошти.
+    A form for creating and editing contacts. 
+    Uses the Contact model and includes verification for phone number and email.
     """
     class Meta:
         model = Contact
@@ -21,32 +20,32 @@ class ContactForm(forms.ModelForm):
             'birthday': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
         labels = {
-            'name': 'Ім\'я',
-            'address': 'Адреса',
-            'phone_number': 'Номер телефону',
-            'email': 'Електронна пошта',
-            'birthday': 'Дата народження',
+            'name': 'Name',
+            'address': 'Address',
+            'phone_number': 'Phone number',
+            'email': 'Email',
+            'birthday': 'Date of birth',
         }
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # Отримуємо користувача з kwargs
+        self.user = kwargs.pop('user', None)
         super(ContactForm, self).__init__(*args, **kwargs)
 
     def clean_phone_number(self):
         """
-        Валідація номера телефону. Перевіряє, що номер телефону коректний.
+        Phone number validation. Checks that the phone number is valid.
 
         Returns:
-            str: Валідний номер телефону.
+            str: Valid phone number.
 
         Raises:
-            forms.ValidationError: Якщо номер телефону некоректний.
+            forms.ValidationError: If the phone number is invalid.
         """
         phone_number = self.cleaned_data.get('phone_number')
         if not phone_number:
             raise ValidationError("This field is required.")
 
-        contact_id = self.instance.id  # Використовуємо ID для виключення поточного контакту
+        contact_id = self.instance.id
         if Contact.objects.filter(user=self.user, phone_number=phone_number).exclude(id=contact_id).exists():
             raise ValidationError("This phone number is already exists in your contact list. Please check the correct input and try again.")
     
@@ -54,8 +53,7 @@ class ContactForm(forms.ModelForm):
 
     def clean_email(self):
         """
-        Валідація електронної пошти. Перевіряє, що електронна пошта коректна
-        та унікальна для поточного користувача.
+        Email validation. Checks that the email is valid and unique to the current user.
         """
         email = self.cleaned_data.get('email')
 
@@ -64,7 +62,7 @@ class ContactForm(forms.ModelForm):
         except ValidationError:
             raise ValidationError("Enter a valid email address.")
 
-        contact_id = self.instance.id  # Використовуємо ID для виключення поточного контакту
+        contact_id = self.instance.id
         if Contact.objects.filter(user=self.user, email=email).exclude(id=contact_id).exists():
             raise ValidationError("This email address is already exists in your contact list. Please check the correct input and try again.")
 
@@ -72,15 +70,15 @@ class ContactForm(forms.ModelForm):
 
 class BirthdayFilterForm(forms.Form):
     """
-    Форма для вибору періоду для фільтрації контактів з наближаючими днями народження.
+    A form for selecting a period to filter contacts with upcoming birthdays.
     """
     PERIOD_CHOICES = [
-        (1, '1 місяць'),
-        (3, '3 місяці'),
-        (6, '6 місяців'),
-        (12, '1 рік'),
+        (1, '1 month'),
+        (3, '3 months'),
+        (6, '6 months'),
+        (12, '1 year'),
     ]
 
     period = forms.ChoiceField(
-        choices=PERIOD_CHOICES, initial=1, label="Виберіть період", widget=forms.Select(attrs={'class': 'form-control'})
+        choices=PERIOD_CHOICES, initial=1, label="Select a period", widget=forms.Select(attrs={'class': 'form-control'})
     )

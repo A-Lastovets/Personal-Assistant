@@ -28,13 +28,12 @@ from django.contrib.messages import constants as messages
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 env_file_path = BASE_DIR / '.env'
-env_file_path = BASE_DIR.parent / '.env'
 env.read_env(env_file_path)
 
 
@@ -110,8 +109,8 @@ DATABASES = {
         'PASSWORD': env('KOYEB_DB_PASSWORD'),
         'HOST': env('KOYEB_DB_HOST'),
         'OPTIONS': {'sslmode': 'require'},
+        }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -148,9 +147,9 @@ cloudinary.config(cloud_name=env("CLOUDINARY_CLOUD_NAME"), api_key=env(
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'uk'
+LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Kiev'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -160,12 +159,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Настройки AWS
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
@@ -177,7 +177,6 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazo
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Boto3'
-STATICFILES_STORAGE = 'storages.backends.s3.S3Boto3'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -189,3 +188,13 @@ MESSAGE_TAGS = {
 }
 
 LOGIN_URL = 'users:login'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.environ.get('REDIS_URL'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}

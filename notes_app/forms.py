@@ -7,15 +7,15 @@ class NoteForm(forms.ModelForm):
         queryset=Tag.objects.all(),
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        label='Теги'
+        label='Tags'
     )
 
     class Meta:
         model = Note
         fields = ['title', 'content', 'tags']
         labels = {
-            'title': 'Заголовок',
-            'content': 'Опис',
+            'title': 'Title',
+            'content': 'Description',
         }
 
     def __init__(self, *args, **kwargs):

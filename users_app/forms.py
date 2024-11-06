@@ -11,7 +11,7 @@ class RegisterForm(UserCreationForm):
         required=True,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Логін',
+            'placeholder': 'Login',
         })
     )
 
@@ -29,7 +29,7 @@ class RegisterForm(UserCreationForm):
         required=True,
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Пароль',
+            'placeholder': 'Password',
         })
     )
 
@@ -38,7 +38,7 @@ class RegisterForm(UserCreationForm):
         required=True,
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Підтвердження пароля',
+            'placeholder': 'Confirm Password',
         })
     )
 
@@ -46,10 +46,10 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
         labels = {
-            'username': 'Ім’я користувача',
-            'email': 'Електронна пошта',
-            'password1': 'Пароль',
-            'password2': 'Підтвердження пароля',
+            'username': 'Username',
+            'email': 'Email',
+            'password1': 'Password',
+            'password2': 'Confirm Password',
         }
 
     def __init__(self, *args, **kwargs):
@@ -64,14 +64,14 @@ class LoginForm(AuthenticationForm):
         max_length=100,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Логін',
+            'placeholder': 'Login',
         })
     )
 
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Пароль',
+            'placeholder': 'Password',
         })
     )
 
@@ -79,8 +79,8 @@ class LoginForm(AuthenticationForm):
         model = User
         fields = ['username', 'password']
         labels = {
-            'username': 'Ім’я користувача',
-            'password': 'Пароль',
+            'username': 'Username',
+            'password': 'Password',
         }
 
     def __init__(self, *args, **kwargs):
@@ -101,6 +101,6 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ['avatar']
         labels = {
-            'avatar': 'Аватар',
+            'avatar': 'Avatar',
         }
-        
+

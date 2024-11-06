@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.shortcuts import render
 from django.views.generic import View
 from datetime import datetime
@@ -11,12 +12,15 @@ env = environ.Env()
 env_file_path = BASE_DIR.parent / '.env'
 env.read_env(env_file_path)
 
-
 class ExchangeRateView(View):
     def get_exchange_rates(self):
         api_key_to_exchange_rate = env('api_key_to_exchange_rate')
         exchange_rate_url = (f'http://data.fixer.io/api/latest?access_key={api_key_to_exchange_rate}'
                              f'&symbols=USD,EUR,PLN,UAH')
+
+        cached_rates = cache.get('exchange_rates')
+        if cached_rates:
+            return cached_rates
 
         try:
             response = requests.get(exchange_rate_url)
@@ -31,16 +35,19 @@ class ExchangeRateView(View):
                 pln_to_uah = round(
                     currency_data['rates']['UAH'] / currency_data['rates']['PLN'], 2)
 
-                return {
+                rates = {
                     'usd_to_uah': usd_to_uah,
                     'eur_to_uah': eur_to_uah,
                     'pln_to_uah': pln_to_uah,
                 }
+                cache.set('exchange_rates', rates, timeout=1800)
+
+                return rates
             else:
-                return {'error': 'Не вдалося отримати курси валют. Спробуйте пізніше.'}
+                return {'error': 'Failed to retrieve exchange rates. Please try again later.'}
 
         except (requests.exceptions.HTTPError, requests.exceptions.RequestException):
-            return {'error': 'Не вдалося отримати дані про курси валют. Спробуйте пізніше.'}
+            return {'error': 'Failed to retrieve exchange rate data. Please try again later.'}
 
 
 class NewsView(View):
@@ -50,11 +57,15 @@ class NewsView(View):
                       'health', 'science', 'sports', 'technology']
         news_by_category = {}
 
+        cached_news = cache.get('news_data')
+        if cached_news:
+            return cached_news
+
         for category in categories:
             try:
                 news_data = newsapi.get_top_headlines(category=category)
             except Exception as e:
-                return {'error': 'Не вдалося отримати новини. Спробуйте пізніше.'}
+                return {'error': 'Failed to retrieve news. Please try again later.'}
 
             articles = []
             for article in news_data.get('articles', []):
@@ -80,8 +91,9 @@ class NewsView(View):
 
             news_by_category[category] = articles
 
-        return news_by_category
+        cache.set('news_data', news_by_category, timeout=1800)
 
+        return news_by_category
 
 class ExchangeRateNewsView(View):
     template_name = 'news.html'

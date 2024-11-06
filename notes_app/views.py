@@ -92,7 +92,6 @@ def edit_note(request, note_id):
                     except Tag.DoesNotExist:
                         continue
 
-            # Добавляем новый тег, если он был введён
             new_tag_name = request.POST.get('new_tag')
             if new_tag_name:
                 tag, created = Tag.objects.get_or_create(
@@ -109,12 +108,6 @@ def edit_note(request, note_id):
     user_tags = Tag.objects.filter(created_by=request.user)
 
     return render(request, 'notes_app/edit_note.html', {'form': form, 'note': note, 'tags': user_tags})
-
-
-
-
-
-
 
 
 @login_required
@@ -151,7 +144,7 @@ def add_tag(request):
                 defaults={'created_by': request.user}
             )
             if created:
-                messages.success(request, 'Тег успішно додано!')
+                messages.success(request, 'Tag added successfully!')
             else:
-                messages.warning(request, 'Тег вже існує!')
+                messages.warning(request, 'Tag already exists!')
     return redirect(request.META.get('HTTP_REFERER', 'add_note'))

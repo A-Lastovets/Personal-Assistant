@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Contact
 from django.utils import timezone
-from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
 class UpcomingBirthdaysFilter(admin.SimpleListFilter):

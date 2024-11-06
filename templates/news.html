@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Новини{% endblock %}
+{% block title %}News{% endblock %}
 
 {% block content %}
     <div class="header-container">
-        <h2>Останні новини</h2>
+        <h2>Latest news</h2>
         <div class="exchange-rate">
-            <h3>Популярні валютні курси</h3>
+            <h3>Popular currency exchange rates</h3>
             {% if usd_to_uah and eur_to_uah and pln_to_uah %}
                 <p>USD to UAH: {{ usd_to_uah }}</p>
                 <p>EUR to UAH: {{ eur_to_uah }}</p>
@@ -30,11 +30,11 @@
                                 <li>
                                     <h4><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></h4>
                                     <p>{{ article.description }}</p>
-                                    <p><strong>Автор:</strong>
+                                    <p><strong>Author:</strong>
                                     {% if article.author and article.author != "None" %}
                                         {{ article.author }}
                                     {% else %}
-                                        Невідомий
+                                        Unknown Author
                                     {% endif %}
                                     </p>
                                     <p>{{ article.published_at }}</p>
@@ -42,10 +42,10 @@
                             {% endfor %}
                         </ul>
                         <div class="back-to-top">
-                            <button onclick="scrollToTop()" class="button">Повернутися на верх сторінки</button>
+                            <button onclick="scrollToTop()" class="button">Go up to the top</button>
                         </div>
                     {% else %}
-                        <p>Не знайдено новин на цю категорію.</p>
+                        <p>No news found for this category</p>
                     {% endif %}
                 </div>
             </div>
@@ -118,6 +118,61 @@
 
         .button:hover {
             background-color: #0056b3; 
+        }
+
+        @media (max-width: 767px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .exchange-rate {
+                text-align: center;
+                margin-top: 10px;
+            }
+
+            .toggle-news {
+                padding: 12px;
+                font-size: 1.1rem;
+                width: 100%;
+            }
+
+            .news-list {
+                padding: 10px;
+            }
+
+            li {
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+
+            .back-to-top {
+                margin-top: 15px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .toggle-news {
+                font-size: 1.3rem;
+            }
+
+            .button {
+                padding: 12px 25px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .header-container {
+                justify-content: space-between;
+            }
+
+            .toggle-news {
+                font-size: 1.5rem;
+            }
+
+            .button {
+                padding: 15px 30px;
+            }
         }
     </style>
 

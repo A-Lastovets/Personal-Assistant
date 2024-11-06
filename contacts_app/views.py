@@ -11,13 +11,13 @@ from django.core.paginator import Paginator
 
 def contacts_home(request):
     """
-    Головна сторінка для керування контактами.
+    Main page for managing contacts.
 
     Args:
-        request (HttpRequest): Об'єкт запиту.
+        request (HttpRequest): The request object.
 
     Returns:
-        HttpResponse: Сторінка для вибору дій з контактами.
+        HttpResponse: The page for selecting actions with contacts.
     """
     return render(request, 'contacts_app/contact_home.html')
 
@@ -25,16 +25,16 @@ def contacts_home(request):
 @login_required
 def add_contact(request):
     """
-    Створення нового контакту.
+    Creating a new contact.
 
-    Якщо метод POST, створює новий контакт на основі введених даних.
-    Якщо метод GET, повертає форму для введення даних.
+    If the method is POST, creates a new contact based on the entered data.
+    If the method is GET, returns a form for data entry.
 
     Args:
-        request (HttpRequest): Об'єкт запиту.
+        request (HttpRequest): The request object.
 
     Returns:
-        HttpResponse: Сторінка з формою для додавання контакту.
+        HttpResponse: The page with a form for adding a contact.
     """
     if request.method == 'POST':
         form = ContactForm(request.POST, user=request.user)
@@ -52,14 +52,14 @@ def add_contact(request):
 @login_required
 def contact_detail(request, contact_id):
     """
-    Показує деталі конкретного контакту.
+    Displays the details of a specific contact.
 
     Args:
-        request (HttpRequest): Об'єкт запиту.
-        contact_id (int): Ідентифікатор контакту.
+        request (HttpRequest): The request object.
+        contact_id (int): The contact's identifier.
 
     Returns:
-        HttpResponse: Сторінка з деталями контакту.
+        HttpResponse: The page with the contact's details.
     """
     contact = get_object_or_404(
         Contact, id=contact_id, user=request.user)
@@ -69,27 +69,27 @@ def contact_detail(request, contact_id):
 @login_required
 def edit_contact(request, contact_id):
     """
-    Редагування існуючого контакту.
+    Editing an existing contact.
 
-    Завантажує контакт за його ідентифікатором і дозволяє змінювати його дані.
+    Loads the contact by its identifier and allows modifying its data.
 
     Args:
-        request (HttpRequest): Об'єкт запиту.
-        contact_id (int): Ідентифікатор контакту.
+        request (HttpRequest): The request object.
+        contact_id (int): The contact's identifier.
 
     Returns:
-        HttpResponse: Сторінка з формою для редагування контакту.
+        HttpResponse: The page with a form for editing the contact.
     """
     contact = get_object_or_404(
         Contact, id=contact_id, user=request.user)
 
     if request.method == 'POST':
-        form = ContactForm(request.POST, instance=contact, user=request.user)  # Додаємо user
+        form = ContactForm(request.POST, instance=contact, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('contact_list')
     else:
-        form = ContactForm(instance=contact, user=request.user)  # Додаємо user
+        form = ContactForm(instance=contact, user=request.user)
 
     return render(request, 'contacts_app/edit_contact.html', {
         'form': form,
@@ -100,16 +100,16 @@ def edit_contact(request, contact_id):
 @login_required
 def delete_contact(request, contact_id):
     """
-    Видалення контакту.
+    Deleting a contact.
 
-    Завантажує контакт за його ідентифікатором і видаляє його після підтвердження.
+    Loads the contact by its identifier and deletes it upon confirmation.
 
     Args:
-        request (HttpRequest): Об'єкт запиту.
-        contact_id (int): Ідентифікатор контакту.
+        request (HttpRequest): The request object.
+        contact_id (int): The contact's identifier.
 
     Returns:
-        HttpResponse: Сторінка підтвердження видалення контакту.
+        HttpResponse: The contact deletion confirmation page.
     """
     contact = get_object_or_404(
         Contact, id=contact_id, user=request.user)
@@ -120,7 +120,7 @@ def delete_contact(request, contact_id):
 @login_required
 def contact_list(request):
     """
-    Виводить список всіх контактів з можливістю пошуку.
+    Displays a list of all contacts with search functionality.
     """
     query = request.GET.get('search', '').strip()
     contacts = Contact.objects.filter(
@@ -144,16 +144,15 @@ def contact_list(request):
 @login_required
 def contact_search(request):
     """
-    Пошук контактів за переданим запитом.
+    Searches for contacts based on the provided query.
 
     Args:
-        request (HttpRequest): Об'єкт запиту з можливим GET параметром 'query'.
+        request (HttpRequest): The request object, possibly containing a 'query' GET parameter.
 
     Returns:
-        HttpResponse: Сторінка з результатами пошуку контактів або порожнє поле, якщо запиту ще не введено.
+        HttpResponse: The page with search results for contacts, or an empty field if no query has been entered.
     """
-    query = request.GET.get(
-        'query', '')
+    query = request.GET.get('query', '')
     if query:
         contacts = Contact.objects.filter(name__icontains=query)
     else:
@@ -165,13 +164,13 @@ def contact_search(request):
 @login_required
 def upcoming_birthdays(request):
     """
-    Отримує контакти з наближаючими днями народження в обраному періоді.
+    Retrieves contacts with upcoming birthdays within a selected period.
 
     Args:
-        request (HttpRequest): Об'єкт запиту.
+        request (HttpRequest): The request object.
 
     Returns:
-        HttpResponse: Сторінка з контактами, що мають наближаючі дні народження.
+        HttpResponse: The page with contacts who have upcoming birthdays.
     """
     today = timezone.localdate()
     period = request.GET.get('period', 1)

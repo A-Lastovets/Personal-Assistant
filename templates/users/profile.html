@@ -3,12 +3,12 @@
 {% load static %}
 {% load custom_filters %}
 
-{% block title %}Профіль{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block content %}
 <div class="card" style="background-color: #3D6657; color: #E2B29B;">
     <div class="card-header" style="background-color: #155840; color: #E2B29B;">
-        <h2 class="text-center">Ваш профіль</h2>
+        <h2 class="text-center">Your Profile</h2>
     </div>
     <div class="card-body">
         <div class="form-group text-center">
@@ -16,7 +16,7 @@
         </div>
 
         <div class="form-group">
-            <label for="username">Логін:</label>
+            <label for="username">Login:</label>
             <input type="text" id="username" value="{{ user.username }}" class="form-control" readonly>
         </div>
 
@@ -26,4 +26,38 @@
         </div>
     </div>
 </div>
+
+<style>
+    @media (max-width: 768px) {
+        .card {
+            margin: 10px;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+        }
+
+        .form-control {
+            font-size: 1rem;
+        }
+    }
+</style>
+
 {% endblock %}

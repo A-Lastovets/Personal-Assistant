@@ -1,22 +1,17 @@
-# Використовуємо образ Python
 FROM python:3.12.2-bookworm
 
-# Встановлюємо робочу директорію всередині контейнера
 WORKDIR /app
 
-# Копіюємо файли проекту в контейнер
-COPY . .
+COPY requirements.txt /app/
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
 
-# Встановлюємо залежності
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+COPY . /app/
 
-# Виконуємо команду збору статичних файлів
-RUN python personal_assistant/manage.py collectstatic
+RUN python manage.py migrate --noinput
 
-# Виставляємо порт
+RUN python manage.py collectstatic --noinput
+
 EXPOSE 8000
 
-# Gunicorn для стабільного продакшн-середовища
-#Коли Gunicorn запускається, він створює кілька воркерів, щоб паралельно обробляти запити
 CMD ["gunicorn", "--workers", "9", "--bind", "0.0.0.0:8000", "personal_assistant.wsgi:application"]
