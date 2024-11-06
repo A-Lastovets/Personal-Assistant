@@ -19,8 +19,9 @@
     <style>
         @media (max-width: 767px) {
             .navbar {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
             }
 
             .navbar-brand {
@@ -28,50 +29,26 @@
             }
 
             .navbar-nav {
-                width: 100%;
-                text-align: center;
-                padding: 0;
-            }
-
-            .navbar-nav .nav-item {
-                width: 100%;
-                text-align: center;
-                margin-bottom: 5px;
-            }
-
-            .navbar-nav .nav-link {
-                padding: 12px 15px;
-                background-color: #6FBDA2;
-                color: #155840;
-                border-radius: 5px;
-                margin: 5px 0;
-                transition: background-color 0.3s;
-            }
-
-            .navbar-nav .nav-link:hover {
-                background-color: #81BDA8;
+                display: none;
             }
 
             .navbar-text {
                 display: flex;
-                flex-direction: column;
-                align-items: flex-start;
+                justify-content: flex-end;
                 width: 100%;
-                justify-content: center;
-                padding: 10px;
             }
 
             .btn {
-                width: 100%;
-                margin-top: 10px;
+                margin-left: 10px;
                 background-color: #E2B29B;
                 color: #155840;
                 border: none;
                 padding: 12px 15px;
+                font-size: 1rem;
             }
 
-            .navbar-toggler {
-                background-color: #E2B29B;
+            .btn:hover {
+                background-color: #C69C6D;
             }
 
             .currency-section {
@@ -88,10 +65,11 @@
             }
         }
 
-        @media (min-width: 768px) and (max-width: 1024px) {
+        @media (min-width: 768px) {
             .navbar {
                 flex-direction: row;
                 justify-content: space-between;
+                align-items: center;
             }
 
             .navbar-nav {
@@ -114,62 +92,19 @@
             }
         }
 
-        @media (min-width: 1024px) {
-            .navbar {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-
-            .navbar-nav {
-                display: flex;
-                justify-content: flex-end;
-            }
-
-            .navbar-nav .nav-item {
-                margin-left: 15px;
-            }
-
-            .navbar-text {
-                display: flex;
-                align-items: center;
-            }
-
-            .btn {
-                width: auto;
-                margin-left: 10px;
-            }
-        }
     </style>
 </head>
 <body style="background-color: #3D6657; color: #E2B29B;">
     <nav class="navbar navbar-expand-lg" style="background-color: #155840; color: #E2B29B;">
         <a class="navbar-brand" href="{% url 'home' %}" style="color: #81BDA8;">PA</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact_home' %}" style="color: #E2B29B;">Contacts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'note_home' %}" style="color: #E2B29B;">Notes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'file_list' %}" style="color: #E2B29B;">Cloud storage</a>
-                    </li>
-                {% endif %}
-            </ul>
-            <span class="navbar-text ml-auto" style="color: #E2B29B;">
-                {% if user.is_authenticated %}
-                    Hi, <a href="{% url 'users:profile' %}" style="color: #81BDA8;">{{ user.username }}</a>!
-                    <a href="{% url 'users:logout' %}" class="btn btn-danger" style="margin-left: 10px; background-color: #CA825F; border: none;">Log out</a>
-                {% else %}
-                    <a href="{% url 'users:login' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Login</a>
-                    <a href="{% url 'users:signup' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none; margin-left: 10px;">Sign up</a>
-                {% endif %}
-            </span>
+        <div class="navbar-text ml-auto">
+            {% if user.is_authenticated %}
+                Hi, <a href="{% url 'users:profile' %}" style="color: #81BDA8;">{{ user.username }}</a>!
+                <a href="{% url 'users:logout' %}" class="btn btn-danger" style="background-color: #CA825F; border: none;">Log out</a>
+            {% else %}
+                <a href="{% url 'users:login' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Login</a>
+                <a href="{% url 'users:signup' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none; margin-left: 10px;">Sign up</a>
+            {% endif %}
         </div>
     </nav>
     
