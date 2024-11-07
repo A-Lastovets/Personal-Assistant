@@ -17,91 +17,115 @@
     <link href="https://fonts.googleapis.com/css2?family=Moderustic:wght@300..800&display=swap" rel="stylesheet">
 
     <style>
+        body {
+            background-color: #3D6657;
+            color: #E2B29B;
+        }
+
+        .navbar {
+            background-color: #155840;
+            color: #E2B29B;
+        }
+        
+        .navbar-brand {
+            color: #81BDA8;
+        }
+
+        .navbar .btn {
+            background-color: #E2B29B;
+            color: #155840;
+            border: none;
+        }
+
+        .navbar .btn-danger {
+            background-color: #CA825F;
+            border: none;
+        }
+
         @media (max-width: 767px) {
             .navbar {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
+                flex-direction: column;
+                align-items: flex-start;
             }
-    
+
             .navbar-brand {
                 font-size: 1.5rem;
+                margin-bottom: 10px;
             }
-    
+
             .navbar-text {
                 display: flex;
-                justify-content: flex-end;
+                flex-direction: column;
+                align-items: flex-start;
                 width: 100%;
             }
-    
-            .btn {
-                margin-left: 10px;
-                background-color: #E2B29B;
-                color: #155840;
-                border: none;
-                padding: 8px 10px;
+
+            .navbar-text .btn {
+                width: 100%;
+                margin-bottom: 10px;
+                padding: 8px 12px;
                 font-size: 0.9rem;
             }
-    
-            .btn:hover {
+
+            .navbar-text .btn:hover {
                 background-color: #C69C6D;
             }
-    
+
             .currency-section {
                 margin-top: 20px;
                 padding: 10px;
                 background-color: #155840;
                 color: #E2B29B;
                 text-align: center;
+                font-size: 0.9rem;
             }
-    
+
             .news-section {
-                margin-top: 10px;
+                margin-top: 20px;
                 padding-top: 20px;
             }
         }
-    
+
         @media (min-width: 768px) {
             .navbar {
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: center;
             }
-    
+
             .navbar-nav {
                 display: flex;
                 justify-content: flex-end;
             }
-    
+
             .navbar-nav .nav-item {
                 margin-left: 15px;
             }
-    
+
             .navbar-text {
                 display: flex;
                 align-items: center;
             }
-    
-            .btn {
-                width: auto;
+
+            .navbar-text .btn {
                 margin-left: 10px;
             }
         }
     </style>
 </head>
-<body style="background-color: #3D6657; color: #E2B29B;">
-    <nav class="navbar navbar-expand-lg" style="background-color: #155840; color: #E2B29B;">
-        <a class="navbar-brand" href="{% url 'home' %}" style="color: #81BDA8;">PA</a>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="{% url 'home' %}">PA</a>
         <div class="navbar-text ml-auto">
             {% if user.is_authenticated %}
-                <a href="{% url 'contact_home' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Contacts</a>
-                <a href="{% url 'note_home' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Notes</a>
-                <a href="{% url 'file_list' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Cloud storage</a>
+                <a href="{% url 'contact_home' %}" class="btn btn-primary">Contacts</a>
+                <a href="{% url 'note_home' %}" class="btn btn-primary">Notes</a>
+                <a href="{% url 'file_list' %}" class="btn btn-primary">Cloud storage</a>
                 <a href="{% url 'users:profile' %}" style="color: #81BDA8;">Hi, {{ user.username }}!</a>
-                <a href="{% url 'users:logout' %}" class="btn btn-danger" style="background-color: #CA825F; border: none;">Log out</a>
+                <a href="{% url 'users:logout' %}" class="btn btn-danger">Log out</a>
             {% else %}
-                <a href="{% url 'users:login' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none;">Login</a>
-                <a href="{% url 'users:signup' %}" class="btn btn-primary" style="background-color: #E2B29B; color: #155840; border: none; margin-left: 10px;">Sign up</a>
+                <a href="{% url 'users:login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'users:signup' %}" class="btn btn-primary" style="margin-left: 10px;">Sign up</a>
             {% endif %}
         </div>
     </nav>
