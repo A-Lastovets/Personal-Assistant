@@ -4,7 +4,6 @@
 
 {% block content %}
     <div class="header-container">
-        <h2>Latest news</h2>
         <div class="exchange-rate">
             <h3>Popular currency exchange rates</h3>
             {% if usd_to_uah and eur_to_uah and pln_to_uah %}
@@ -15,6 +14,7 @@
                 <p>{{ error }}</p>
             {% endif %}
         </div>
+        <h2>Latest news</h2>
     </div>
 
     <div class="news-container">
@@ -55,130 +55,23 @@
     <style>
         .header-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .exchange-rate {
-            text-align: right;
-            margin-bottom: 90px;
+            margin-right: 20px;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .header-container h2 {
+            margin-left: auto;
         }
 
         .news-container {
             margin-top: 30px;
         }
 
-        .news-list {
-            display: none;
-            margin-top: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 10px;
-        }
-
-        .toggle-news {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff; 
-            color: white; 
-            border: none;
-            cursor: pointer;
-            text-align: left;
-            margin: 5px 0;
-            border-radius: 5px;
-        }
-
-        .toggle-news:hover {
-            background-color: #0056b3; 
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 15px;
-            background-color: #ffffff; 
-            border-radius: 5px; 
-            padding: 10px; 
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-to-top {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .button {
-            padding: 10px 20px; 
-            background-color: #007bff; 
-            color: white; 
-            border: none; 
-            border-radius: 5px;
-            cursor: pointer; 
-            transition: background-color 0.3s; 
-        }
-
-        .button:hover {
-            background-color: #0056b3; 
-        }
-
-        @media (max-width: 767px) {
-            .header-container {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .exchange-rate {
-                text-align: center;
-                margin-top: 10px;
-            }
-
-            .toggle-news {
-                padding: 12px;
-                font-size: 1.1rem;
-                width: 100%;
-            }
-
-            .news-list {
-                padding: 10px;
-            }
-
-            li {
-                padding: 15px;
-                margin-bottom: 10px;
-            }
-
-            .back-to-top {
-                margin-top: 15px;
-            }
-        }
-
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .toggle-news {
-                font-size: 1.3rem;
-            }
-
-            .button {
-                padding: 12px 25px;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .header-container {
-                justify-content: space-between;
-            }
-
-            .toggle-news {
-                font-size: 1.5rem;
-            }
-
-            .button {
-                padding: 15px 30px;
-            }
-        }
     </style>
 
     <script>
