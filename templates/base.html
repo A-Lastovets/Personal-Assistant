@@ -61,10 +61,11 @@
             }
 
             .navbar-text .btn {
+                display: block;
                 width: 100%;
                 margin-bottom: 10px;
-                padding: 12px 12px;
-                font-size: 0.9rem;
+                padding: 12px 0;
+                font-size: 1rem;
             }
 
             .navbar-text .btn:hover {
@@ -72,7 +73,7 @@
             }
 
             .currency-section {
-                margin-top: 20px;
+                order: -1;
                 padding: 10px;
                 background-color: #155840;
                 color: #E2B29B;
@@ -81,8 +82,7 @@
             }
 
             .news-section {
-                margin-top: 20px;
-                padding-top: 60px;
+                padding-top: 20px;
             }
         }
 
@@ -109,6 +109,11 @@
 
             .navbar-text .btn {
                 margin-left: 10px;
+            }
+
+            .currency-section {
+                text-align: left;
+                font-size: 1rem;
             }
         }
     </style>

@@ -3,23 +3,22 @@
 {% block title %}News{% endblock %}
 
 {% block content %}
-    <div class="header-container">
-        <div class="exchange-rate">
-            <h3>Popular currency exchange rates</h3>
-            {% if usd_to_uah and eur_to_uah and pln_to_uah %}
-                <p>USD to UAH: {{ usd_to_uah }}</p>
-                <p>EUR to UAH: {{ eur_to_uah }}</p>
-                <p>PLN to UAH: {{ pln_to_uah }}</p>
-            {% else %}
-                <p>{{ error }}</p>
-            {% endif %}
-        </div>
-        <h2>Latest news</h2>
+    <div class="currency-section">
+        <h3>Popular currency exchange rates</h3>
+        {% if usd_to_uah and eur_to_uah and pln_to_uah %}
+            <p>1 USD = {{ usd_to_uah }} UAH</p>
+            <p>1 EUR = {{ eur_to_uah }} UAH</p>
+            <p>1 PLN = {{ pln_to_uah }} UAH</p>
+        {% else %}
+            <p>{{ error }}</p>
+        {% endif %}
     </div>
 
-    <div class="news-container">
+    <div class="news-section">
+        <h2>Latest News</h2>
+        
         {% for category, articles in news_by_category.items %}
-            <div class="news-section">
+            <div class="news-category">
                 <button class="toggle-news" onclick="toggleNews('{{ category|slugify }}')">
                     {{ category|title }} News
                 </button>
@@ -53,25 +52,41 @@
     </div>
 
     <style>
-        .header-container {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .exchange-rate {
-            margin-right: 20px;
+        .currency-section {
+            margin-bottom: 20px;
             padding: 10px;
+            background-color: #155840;
+            color: #E2B29B;
             text-align: left;
         }
 
-        .header-container h2 {
-            margin-left: left;
-        }
-
-        .news-container {
+        .news-section {
             margin-top: 30px;
         }
 
+        .news-category {
+            margin-top: 20px;
+        }
+
+        .toggle-news {
+            background-color: #CA825F;
+            color: #E2B29B;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+
+        .news-list {
+            display: none;
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .back-to-top {
+            margin-top: 10px;
+        }
     </style>
 
     <script>
