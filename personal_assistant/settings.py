@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 import environ
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+# import cloudinary
+# import cloudinary.uploader
+# import cloudinary.api
 
 from pathlib import Path
 
@@ -104,10 +104,10 @@ WSGI_APPLICATION = 'personal_assistant.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('KOYEB_DB_NAME'),
-        'USER': env('KOYEB_DB_USER'),
-        'PASSWORD': env('KOYEB_DB_PASSWORD'),
-        'HOST': env('KOYEB_DB_HOST'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
         'OPTIONS': {'sslmode': 'require'},
         }
     }
@@ -141,8 +141,8 @@ EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Cloudinary settings
-cloudinary.config(cloud_name=env("CLOUDINARY_CLOUD_NAME"), api_key=env(
-    "CLOUDINARY_API_KEY"), api_secret=env("CLOUDINARY_API_SECRET"), secure=True)
+# cloudinary.config(cloud_name=env("CLOUDINARY_CLOUD_NAME"), api_key=env(
+#     "CLOUDINARY_API_KEY"), api_secret=env("CLOUDINARY_API_SECRET"), secure=True)
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -173,10 +173,15 @@ AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_REGION_NAME = 'eu-north-1'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
+AWS_QUERYSTRING_AUTH = False # дозволити файли для публічного доступу
 
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+# AWS_S3_OBJECT_PARAMETERS = {
+#     'CacheControl': 'max-age=86400',  # Кешування на 1 день
+# }
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3.S3Boto3'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

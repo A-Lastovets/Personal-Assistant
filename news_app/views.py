@@ -15,10 +15,12 @@ env.read_env(env_file_path)
 class ExchangeRateView(View):
     def get_exchange_rates(self):
         api_key_to_exchange_rate = env('api_key_to_exchange_rate')
+        print('api_key_to_exchange_rate=', api_key_to_exchange_rate)
         exchange_rate_url = (f'http://data.fixer.io/api/latest?access_key={api_key_to_exchange_rate}'
                              f'&symbols=USD,EUR,PLN,UAH')
 
         cached_rates = cache.get('exchange_rates')
+        print('cached_exchange_rates=', cached_rates)
         if cached_rates:
             return cached_rates
 
@@ -53,6 +55,7 @@ class ExchangeRateView(View):
 class NewsView(View):
     def get_news(self):
         newsapi = NewsApiClient(api_key=env('api_key'))
+        print('api_key=',env('api_key'))
         categories = ['business', 'entertainment', 'general',
                       'health', 'science', 'sports', 'technology']
         news_by_category = {}

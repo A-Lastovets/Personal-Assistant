@@ -1,20 +1,16 @@
-import cloudinary.exceptions
-from django.shortcuts import get_object_or_404
+import os
+import boto3
+import mimetypes
+from io import BytesIO
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
+from django.conf import settings
 from django.views.generic import ListView
-import cloudinary
-import cloudinary.uploader
-import imageio
-from io import BytesIO
-import mimetypes
-import requests
-import os
 from .models import File
 from .forms import FileUploadForm
-import cloudinary.api
-
+import requests
+from botocore.exceptions import NoCredentialsError
 
 class FileListView(ListView):
     model = File
@@ -25,17 +21,15 @@ class FileListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset().filter(
             user=self.request.user).order_by('-uploaded_at')
-        
-        category = self.request.GET.get('category')
 
-        print(f"Filter Category: {category}") 
+        category = self.request.GET.get('category')
 
         if category == 'all' or not category:
             return queryset
-        
+
         if category in dict(self.model.CATEGORY_CHOICES).keys():
             queryset = queryset.filter(category=category)
-        
+
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -60,43 +54,50 @@ def upload_file(request):
             file_instance = form.save(commit=False)
             file_instance.user = request.user
 
-            if file_instance.category == 'image':
-                resource_type = 'image'
-            elif file_instance.category in ['video', 'audio']:
-                resource_type = 'video'
+            file_name = file_instance.file.name
+            file_extension = os.path.splitext(file_name)[1].lower()
+
+            if file_extension in ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff']:
+                file_instance.category = 'image'
+            elif file_extension in ['.mp4', '.avi', '.mov', '.wmv', '.mkv', '.flv']:
+                file_instance.category = 'video'
+            elif file_extension in ['.mp3', '.flac', '.wav']:
+                file_instance.category = 'audio'
+            elif file_extension in ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv']:
+                file_instance.category = 'document'
             else:
-                resource_type = 'raw'
+                file_instance.category = 'other'
 
             try:
-                cloudinary_response = cloudinary.uploader.upload(
-                    file_instance.file,
-                    resource_type=resource_type,
-                    access_mode='public'
+                s3_client = boto3.client(
+                    's3',
+                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    region_name=settings.AWS_S3_REGION_NAME,
                 )
 
-                file_instance.file = cloudinary_response['secure_url']
-                file_instance.public_id = cloudinary_response['public_id']
-                file_instance.resource_type = cloudinary_response['resource_type']
+                bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+                s3_key = f'{file_instance.user.username}/{file_name}'
 
-                if file_instance.category == 'video':
-                    video_url = cloudinary_response['secure_url']
-                    reader = imageio.get_reader(video_url)
-                    frame = reader.get_data(0)
-                    image = BytesIO()
-                    imageio.imwrite(image, frame, format='png')
-                    image.seek(0)
+                s3_client.upload_fileobj(
+                    file_instance.file,
+                    bucket_name,
+                    s3_key,
+                    ExtraArgs={'ACL': 'public-read'}
+                )
 
-                    preview_response = cloudinary.uploader.upload(
-                        image, resource_type='image'
-                    )
-
-                    file_instance.preview = preview_response['secure_url']
+                file_instance.file = f'https://{bucket_name}.s3.{settings.AWS_S3_REGION_NAME}.amazonaws.com/{s3_key}'
+                file_instance.original_extension = file_extension
+                file_instance.name = file_name
 
                 file_instance.save()
-                return redirect('file_list')
+                return redirect('file_list.html')
+            except NoCredentialsError:
+                form.add_error(None, "AWS credentials not available")
+                return render(request, 'files_app/upload.html', {'form': form})
             except Exception as e:
-                print(f"Error uploading file: {e}")
-                return render(request, 'files_app/upload.html', {'form': form, 'error': str(e)})
+                form.add_error(None, f"Error uploading file: {str(e)}")
+                return render(request, 'files_app/upload.html', {'form': form})
     else:
         form = FileUploadForm()
 
@@ -105,12 +106,7 @@ def upload_file(request):
 
 def download_file(request, file_id):
     file_instance = get_object_or_404(File, id=file_id)
-    file_url = str(file_instance.file)
-
-    if not file_url.endswith(file_instance.original_extension):
-        file_url += file_instance.original_extension
-
-    print(f"Upload URL: '{file_url}'")
+    file_url = file_instance.file
 
     try:
         response = requests.get(file_url)
@@ -118,17 +114,13 @@ def download_file(request, file_id):
 
         file_name = file_instance.name
         file_extension = file_instance.original_extension or ''
-
+        
         content_type, _ = mimetypes.guess_type(file_name + file_extension)
         if content_type is None:
             content_type = 'application/octet-stream'
 
-        file_name, file_extension = os.path.splitext(file_instance.name)
-        file_extension = file_instance.original_extension or file_extension
-
         download_response = HttpResponse(response.content)
-        download_response[
-            'Content-Disposition'] = f'attachment; filename="{file_name}{file_extension}"'
+        download_response['Content-Disposition'] = f'attachment; filename="{file_name}{file_extension}"'
         download_response['Content-Type'] = content_type
 
         return download_response
@@ -143,23 +135,23 @@ def download_file(request, file_id):
 
 def delete_file(request, file_id):
     file_instance = get_object_or_404(File, id=file_id)
-    public_id = file_instance.public_id
-    resource_type = file_instance.resource_type
+    s3_key = f'{file_instance.user.username}/{file_instance.name}'
 
     try:
-        response = cloudinary.uploader.destroy(
-            public_id, resource_type=resource_type, invalidate=True)
-        print(f"Response from Cloudinary: {response}")
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_S3_REGION_NAME,
+        )
 
-        if response.get('result') == 'ok' or response.get('result') == 'deleted':
-            file_instance.delete()
-            return redirect('file_list')
-        else:
-            print(f"File not found or has been deleted. Response: {response}")
-            return HttpResponse("Error: File not found or has been deleted.", status=404)
+        s3_client.delete_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=s3_key
+        )
 
-    except cloudinary.exceptions.Error as e:
-        return HttpResponse("Error: Unable to retrieve file information.", status=500)
+        file_instance.delete()
+        return redirect('file_list.html')
+
     except Exception as e:
-        print(f"Error deleting file from Cloudinary: {str(e)}")
-        return HttpResponse("Error: Failed to delete file.", status=500)
+        return HttpResponse(f"Error deleting file: {str(e)}", status=500)
