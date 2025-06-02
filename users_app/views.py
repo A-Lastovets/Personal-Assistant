@@ -1,4 +1,4 @@
-from .forms import RegisterForm, LoginForm, ProfileForm
+from .forms import RegisterForm, LoginForm, ProfileForm, UserUpdateForm
 
 
 from django.contrib import messages
@@ -53,15 +53,26 @@ def logoutuser(request):
 
 @login_required
 def profile(request):
+    if not hasattr(request.user, "profile"):
+        from users_app.models import Profile
+        Profile.objects.create(user=request.user)
+        
     if request.method == 'POST':
-        profile_form = ProfileForm(
-            request.POST, request.FILES, instance=request.user.profile)
-        if profile_form.is_valid():
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
             profile_form.save()
+            messages.success(request, "Profile updated successfully.")
             return redirect(to='users:profile')
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileForm(instance=request.user.profile)
 
-    profile_form = ProfileForm(instance=request.user.profile)
-    return render(request, 'users/profile.html', {'profile_form': profile_form})
+    return render(request, 'users/profile.html', {
+        'user_form': user_form,
+        'profile_form': profile_form
+    })
 
 
 class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
