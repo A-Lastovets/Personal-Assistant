@@ -13,21 +13,12 @@
     <div class="card-body">
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="form-group">
-                {{ form.username.label_tag }}
-                {{ form.username|add_class:"form-control" }}
-                {% if form.username.errors %}
-                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
-                        {{ form.username.errors|striptags  }}
-                    </div>
-                {% endif %}
-            </div>
 
             <div class="form-group">
                 {{ form.email.label_tag }}
                 {{ form.email|add_class:"form-control" }}
                 {% if form.email.errors %}
-                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                    <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826;">
                         {{ form.email.errors|striptags }}
                     </div>
                 {% endif %}
@@ -38,7 +29,7 @@
                 {{ form.password1|add_class:"form-control" }}
                 {% if form.password1.errors %}
                     {% for error in form.password1.errors %}
-                        <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826;">
                             {{ error|striptags }}
                         </div>
                     {% endfor %}
@@ -50,13 +41,28 @@
                 {{ form.password2|add_class:"form-control" }}
                 {% if form.password2.errors %}
                     {% for error in form.password2.errors %}
-                        <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826; border-color: #75262385;">
+                        <div class="alert alert-danger" role="alert" style="background-color: #D9534F !important; color: #662826;">
                             {{ error|striptags }}
                         </div>
                     {% endfor %}
                 {% endif %}
             </div>
-            
+
+            {# Optional: Add more fields if your form includes them, e.g., first_name, last_name, avatar #}
+            {% if form.first_name %}
+            <div class="form-group">
+                {{ form.first_name.label_tag }}
+                {{ form.first_name|add_class:"form-control" }}
+            </div>
+            {% endif %}
+
+            {% if form.last_name %}
+            <div class="form-group">
+                {{ form.last_name.label_tag }}
+                {{ form.last_name|add_class:"form-control" }}
+            </div>
+            {% endif %}
+
             <div class="form-group">
                 <button type="submit" class="btn btn-primary" style="background-color: #6FBDA2; border: none;">Sign Up</button>
             </div>
@@ -66,37 +72,4 @@
         </form>
     </div>
 </div>
-
-<style>
-    @media (max-width: 768px) {
-        .card {
-            margin: 10px;
-        }
-
-        .card-body {
-            padding: 15px;
-        }
-
-        .card-header h2 {
-            font-size: 1.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group label {
-            font-size: 1rem;
-        }
-
-        .form-control {
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            width: 100%;
-        }
-    }
-</style>
-
 {% endblock %}

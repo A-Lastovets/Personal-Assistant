@@ -58,11 +58,13 @@ class RegisterForm(UserCreationForm):
         user.email = user.email.lower()
         if commit:
             user.save()
+            Profile.objects.create(user=user)
         return user
 
 
 class LoginForm(AuthenticationForm):
-    email = forms.EmailField(
+    username = forms.EmailField(
+        label="Email",
         max_length=100,
         widget=forms.EmailInput(attrs={
             'class': 'form-control',
@@ -77,18 +79,10 @@ class LoginForm(AuthenticationForm):
         })
     )
 
-    class Meta:
-        model = User
-        fields = ['email', 'password']
-        labels = {
-            'email': 'Email',
-            'password': 'Password',
-        }
-
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
-        for field, label in self.Meta.labels.items():
-            self.fields[field].label = label
+        self.fields["username"].label = "Email"
+        self.fields["password"].label = "Password"
 
     def clean_email(self):
         return self.cleaned_data['email'].lower()
@@ -102,10 +96,6 @@ class ProfileForm(forms.ModelForm):
     last_name = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control'})
-    )
-    avatar = forms.ImageField(
-        required=False,
-        widget=forms.ClearableFileInput(attrs={'class': 'form-control-file'})
     )
     phone = forms.CharField(
         required=False,

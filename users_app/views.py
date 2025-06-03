@@ -31,18 +31,16 @@ def loginuser(request):
     if request.user.is_authenticated:
         return redirect(to='home')
 
+    form = LoginForm(request, data=request.POST or None)
     if request.method == 'POST':
-        form = LoginForm(data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             return redirect(to='home')
         else:
-            messages.error(
-                request, 'Invalid username or password. Please try again.')
-            return render(request, 'users/login.html', context={"form": form})
+            messages.error(request, 'Invalid email or password. Please try again.')
 
-    return render(request, 'users/login.html', context={"form": LoginForm()})
+    return render(request, 'users/login.html', {"form": form})
 
 
 @login_required
